@@ -28,6 +28,12 @@ class ChatRoom(BaseRoom):
         self.handle_chat(data["data"])
         
     def handle_user(self, data):
+        """
+        handle_user(data) -> None
+        
+        Add and remove users from self.people.
+        """
+        
         info = data["data"]
         
         if info["from"] in self.people:
@@ -36,6 +42,14 @@ class ChatRoom(BaseRoom):
         self.people[info["to"]] = None
         
     def handle_who(self, data):
+        """
+        handle_who(data) -> None
+        
+        Update the list of who is in the room.
+        """
+        
+        self.people = []
+        
         for user in data["data"]["listing"]:
             self.people[user["name"]] = None
 

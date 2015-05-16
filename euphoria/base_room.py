@@ -35,7 +35,7 @@ class BaseRoom:
 
     def join(self, nick):
         """
-        join(nick) -> None
+        join(nick) -> Bool
 
         Connects to the room and submits the password if there is one.
         It then sends its nick over.
@@ -43,12 +43,16 @@ class BaseRoom:
 
         self.nickname = nick
 
-        self.connection.connect(self.roomname)
+        if not self.connection.connect(self.roomname):
+            return False
+        
         self.connection.send_packet(cn.PTYPE["CLIENT"]["AUTH"],
                                     cn.build_json(passcode=self.password))
 
         self.connection.send_packet(cn.PTYPE["CLIENT"]["NICK"],
                                     cn.build_json(name=nick))
+        
+        return True
 
     def ready(self):
         """
@@ -65,6 +69,9 @@ class BaseRoom:
 
         Run the room.
         """
-        while 1:
-            self.connection.receive_data()
-            time.sleep(0.2)
+        try:
+            while 1:
+                self.connection.receive_data()
+                time.sleep(0.2)
+        except KeyboardInterrupt:
+            self.connection.close()

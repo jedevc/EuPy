@@ -56,7 +56,7 @@ class Connection:
 
     def connect(self, room):
         """
-        connect(room) -> None
+        connect(room) -> Bool
 
         Connect to the given room. Cannot send messages without first
         connecting.
@@ -64,7 +64,11 @@ class Connection:
 
         url = "wss://euphoria.io/room/" + room + "/ws"
         
-        self.socket = websocket.create_connection(url)
+        try:
+            self.socket = websocket.create_connection(url)
+            return True
+        except websocket.WebSocketException:
+            return False
 
     def close(self):
         """
@@ -73,8 +77,9 @@ class Connection:
         Close the connection to the room off nicely.
         """
 
-        self.socket.close()
-        self.socket = None
+        if self.socket is not None:
+            self.socket.close()
+            self.socket = None
 
     def send_json(self, data):
         """
@@ -93,9 +98,10 @@ class Connection:
         Reveive a packet and send it to handle_packet() for proccessing.
         """
 
-        raw = self.socket.recv()
-            
-        self.handle_packet(json.loads(raw))
+        if self.socket is not None:
+            raw = self.socket.recv()
+
+            self.handle_packet(json.loads(raw))
 
     def send_packet(self, ptype, data, callback=None):
         """
