@@ -1,4 +1,4 @@
-import euphoria.connection as cn
+from . import connection as cn
 
 import time
 

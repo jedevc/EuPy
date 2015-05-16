@@ -1,6 +1,8 @@
 import websocket
 import json
 
+import threading
+
 def build_json(**data):
     """
     build_json(**data) -> dict
@@ -33,6 +35,9 @@ class Connection:
 
     def __init__(self):
         self.socket = None
+        self.in_lock = threading.RLock()
+        self.out_lock = threading.RLock()
+        
         self.idcounter = 0
 
         self.type_callbacks = dict()
@@ -59,7 +64,9 @@ class Connection:
         """
 
         url = "wss://euphoria.io/room/" + room + "/ws"
-        self.socket = websocket.create_connection(url)
+        
+        with self.in_lock:
+            self.socket = websocket.create_connection(url)
 
     def close(self):
         """
@@ -68,8 +75,9 @@ class Connection:
         Close the connection to the room off nicely.
         """
 
-        self.socket.close()
-        self.socket = None
+        with self.in_lock:
+            self.socket.close()
+            self.socket = None
 
     def send_json(self, data):
         """
@@ -78,8 +86,9 @@ class Connection:
         Send json data into the stream.
         """
 
-        if self.socket is not None:
-            self.socket.send(json.dumps(data))
+        with self.out_lock:
+            if self.socket is not None:
+                self.socket.send(json.dumps(data))
 
     def receive_data(self):
         """
@@ -88,7 +97,9 @@ class Connection:
         Reveive a packet and send it to handle_packet() for proccessing.
         """
 
-        raw = self.socket.recv()
+        with self.in_lock:
+            raw = self.socket.recv()
+            
         self.handle_packet(json.loads(raw))
 
     def send_packet(self, ptype, data, callback=None):
@@ -99,11 +110,11 @@ class Connection:
         callback entry for when a reply is received.
         """
 
-        pid = self.idcounter
-        self.idcounter += 1
+        with self.out_lock:
+            pid = self.idcounter
+            self.idcounter += 1
 
         packet = {"id": str(pid),
-
                   "type": ptype,
                   "data": data}
 
@@ -121,8 +132,9 @@ class Connection:
 
         pid = packet.get("id")
         if pid in self.id_callbacks:
-            self.id_callbacks[pid](packet)
-            self.id_callbacks.pop(pid, None)
+            callback = self.id_callbacks.pop(pid)
+            if callable(callback):
+                callback(packet)
 
         ptype = packet.get("type")
         if ptype in self.type_callbacks:
