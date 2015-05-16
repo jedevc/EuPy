@@ -12,6 +12,7 @@ def main():
     hi = HiBot("test")
     hi.join("HiBot")
 
+    hi.ready()
     hi.run()
 
 if __name__ == "__main__":

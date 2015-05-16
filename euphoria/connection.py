@@ -116,7 +116,7 @@ class Connection:
             self.send_json(packet)
 
             if callback is not None:
-                self.id_callbacks[pid] = callback
+                self.id_callbacks[str(pid)] = callback
 
     def handle_packet(self, packet):
         """
@@ -126,12 +126,13 @@ class Connection:
         """
 
         pid = packet.get("id")
+        ptype = packet.get("type")
+        
         if pid in self.id_callbacks:
             callback = self.id_callbacks.pop(pid)
             if callable(callback):
                 callback(packet)
 
-        ptype = packet.get("type")
         if ptype in self.type_callbacks:
             for i in self.type_callbacks[ptype]:
                 i(packet)

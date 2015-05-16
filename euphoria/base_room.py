@@ -13,6 +13,8 @@ class BaseRoom:
 
         self.roomname = roomname
         self.password = password
+    
+        self.nickname = None
 
         self.connection.add_callback(cn.PTYPE["EVENT"]["PING"],
                                     self.handle_ping)
@@ -39,12 +41,23 @@ class BaseRoom:
         It then sends its nick over.
         """
 
+        self.nickname = nick
+
         self.connection.connect(self.roomname)
         self.connection.send_packet(cn.PTYPE["CLIENT"]["AUTH"],
                                     cn.build_json(passcode=self.password))
 
         self.connection.send_packet(cn.PTYPE["CLIENT"]["NICK"],
                                     cn.build_json(name=nick))
+
+    def ready(self):
+        """
+        ready() -> None
+        
+        Do last minute setup.
+        """
+        
+        pass
 
     def run(self):
         """

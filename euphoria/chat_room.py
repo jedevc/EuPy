@@ -13,6 +13,10 @@ class ChatRoom(BaseRoom):
 
         self.connection.add_callback(cn.PTYPE["EVENT"]["SEND"],
                                     self.handle_message)
+        self.connection.add_callback(cn.PTYPE["EVENT"]["NICK"],
+                                     self.handle_user)
+        
+        self.people = dict()
 
     def handle_message(self, data):
         """
@@ -22,6 +26,18 @@ class ChatRoom(BaseRoom):
         """
 
         self.handle_chat(data["data"])
+        
+    def handle_user(self, data):
+        info = data["data"]
+        
+        if info["from"] in self.people:
+            self.people.pop(info["from"])
+            
+        self.people[info["to"]] = None
+        
+    def handle_who(self, data):
+        for user in data["data"]["listing"]:
+            self.people[user["name"]] = None
 
     def handle_chat(self, message):
         """
@@ -40,4 +56,8 @@ class ChatRoom(BaseRoom):
         """
 
         self.connection.send_packet(cn.PTYPE["CLIENT"]["SEND"],
-                                    {"content": message, "parent": parent})
+                                    build_json(content=message, parent=parent))
+        
+    def ready(self):
+        self.connection.send_packet(cn.PTYPE["CLIENT"]["WHO"], "",
+                                    self.handle_who)
