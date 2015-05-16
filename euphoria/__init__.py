@@ -1,3 +1,3 @@
-import euphoria.connection
-import euphoria.base_room
-import euphoria.chat_room
+from . import connection
+from . import base_room
+from . import chat_room

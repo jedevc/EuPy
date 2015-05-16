@@ -1,6 +1,8 @@
 import websocket
 import json
 
+import threading
+
 def build_json(**data):
     """
     build_json(**data) -> dict
@@ -33,6 +35,8 @@ class Connection:
 
     def __init__(self):
         self.socket = None
+        self.socket_lock = threading.Lock()
+        
         self.idcounter = 0
 
         self.type_callbacks = dict()
@@ -59,7 +63,9 @@ class Connection:
         """
 
         url = "wss://euphoria.io/room/" + room + "/ws"
-        self.socket = websocket.create_connection(url)
+        
+        with self.socket_lock:
+            self.socket = websocket.create_connection(url)
 
     def close(self):
         """
@@ -68,8 +74,9 @@ class Connection:
         Close the connection to the room off nicely.
         """
 
-        self.socket.close()
-        self.socket = None
+        with self.socket_lock:
+            self.socket.close()
+            self.socket = None
 
     def send_json(self, data):
         """
@@ -78,8 +85,9 @@ class Connection:
         Send json data into the stream.
         """
 
-        if self.socket is not None:
-            self.socket.send(json.dumps(data))
+        with self.socket_lock:
+            if self.socket is not None:
+                self.socket.send(json.dumps(data))
 
     def receive_data(self):
         """
@@ -88,7 +96,9 @@ class Connection:
         Reveive a packet and send it to handle_packet() for proccessing.
         """
 
-        raw = self.socket.recv()
+        with self.socket_lock:
+            raw = self.socket.recv()
+            
         self.handle_packet(json.loads(raw))
 
     def send_packet(self, ptype, data, callback=None):
