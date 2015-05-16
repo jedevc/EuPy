@@ -58,7 +58,7 @@ class BaseRoom:
         """
         ready() -> None
         
-        Do last minute setup.
+        Do last minute setup for the room.
         """
         
         pass

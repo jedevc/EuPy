@@ -48,7 +48,7 @@ class ChatRoom(BaseRoom):
         Update the list of who is in the room.
         """
         
-        self.people = []
+        self.people = dict()
         
         for user in data["data"]["listing"]:
             self.people[user["name"]] = None
@@ -70,7 +70,7 @@ class ChatRoom(BaseRoom):
         """
 
         self.connection.send_packet(cn.PTYPE["CLIENT"]["SEND"],
-                                    build_json(content=message, parent=parent))
+                                    cn.build_json(content=message, parent=parent))
         
     def ready(self):
         self.connection.send_packet(cn.PTYPE["CLIENT"]["WHO"], "",
