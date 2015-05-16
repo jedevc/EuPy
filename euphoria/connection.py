@@ -67,7 +67,8 @@ class Connection:
         url = "wss://euphoria.io/room/" + room + "/ws"
         
         with self.in_lock:
-            self.socket = websocket.create_connection(url)
+            with self.out_lock:
+                self.socket = websocket.create_connection(url)
 
     def close(self):
         """
