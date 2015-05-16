@@ -36,7 +36,7 @@ class BaseRoom:
         join(nick) -> None
 
         Connects to the room and submits the password if there is one.
-        It then sends it's nick over.
+        It then sends its nick over.
         """
 
         self.connection.connect(self.roomname)
