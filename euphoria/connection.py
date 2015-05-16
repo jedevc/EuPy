@@ -35,6 +35,7 @@ class Connection:
 
     def __init__(self):
         self.socket = None
+
         self.in_lock = threading.RLock()
         self.out_lock = threading.RLock()
         
