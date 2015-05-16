@@ -35,11 +35,11 @@ class Connection:
 
     def __init__(self):
         self.socket = None
-
         self.in_lock = threading.RLock()
         self.out_lock = threading.RLock()
         
         self.idcounter = 0
+        self.id_lock = threading.RLock()
 
         self.type_callbacks = dict()
         self.id_callbacks = dict()
@@ -77,8 +77,9 @@ class Connection:
         """
 
         with self.in_lock:
-            self.socket.close()
-            self.socket = None
+            with self.out_lock:
+                self.socket.close()
+                self.socket = None
 
     def send_json(self, data):
         """
@@ -111,7 +112,7 @@ class Connection:
         callback entry for when a reply is received.
         """
 
-        with self.out_lock:
+        with self.id_lock:
             pid = self.idcounter
             self.idcounter += 1
 
@@ -132,10 +133,9 @@ class Connection:
         """
 
         pid = packet.get("id")
-        if pid in self.id_callbacks:
-            callback = self.id_callbacks.pop(pid)
-            if callable(callback):
-                callback(packet)
+        callback = self.id_callbacks.pop(pid)
+        if callable(callback):
+            callback(packet)
 
         ptype = packet.get("type")
         if ptype in self.type_callbacks:
