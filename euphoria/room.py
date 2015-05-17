@@ -2,10 +2,9 @@ from . import connection as cn
 
 import time
 
-class BaseRoom:
+class Room:
     """
-    A room object that simply connects to a room and handles pings from the
-    server.
+    A room object that simply holds components and a connection.
     """
 
     def __init__(self, roomname, password=None):
@@ -16,22 +15,10 @@ class BaseRoom:
     
         self.nickname = None
 
-        self.connection.add_callback(cn.PTYPE["EVENT"]["PING"],
-                                    self.handle_ping)
-
-    def handle_ping(self, packet):
-        """
-        handle_ping(packet) -> None
-
-        This method is added as a callback to handling pings. It should not
-        be called directly.
-
-        The method sends a ping packet off to the server to maintain the
-        connection.
-        """
-
-        self.connection.send_packet(cn.PTYPE["CLIENT"]["PING"],
-                                    cn.build_json(time=int(time.time())))
+        self.components = dict()
+        
+    def add_component(self, name, comp):
+        self.components[name] = comp
 
     def join(self, nick):
         """
@@ -61,7 +48,8 @@ class BaseRoom:
         Do last minute setup for the room.
         """
         
-        pass
+        for i in self.components:
+            self.components[i].ready()
 
     def run(self):
         """

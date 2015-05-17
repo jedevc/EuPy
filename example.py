@@ -1,15 +1,18 @@
 import euphoria
 
-class HiBot(euphoria.chat_room.ChatRoom):
-    def __init__(self, room, password=None):
-        super().__init__(room, password)
+class HiComponent(euphoria.chat_component.ChatComponent):
+    def __init__(self, owner):
+        super().__init__(owner)
 
     def handle_chat(self, message):
         if "hi" in message["content"].lower():
             self.send_chat("Hi there!", message["id"])
 
 def main():
-    hi = HiBot("test")
+    hi = euphoria.room.Room("test")
+    hi.add_component("ping", euphoria.ping_component.PingComponent(hi))
+    hi.add_component("hi", HiComponent(hi))
+    
     hi.join("HiBot")
 
     hi.ready()
