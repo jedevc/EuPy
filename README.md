@@ -16,6 +16,6 @@ python3 example.py
 ```
 
 # Quick use
-Extend one of the Room classes, prefereably the one that has the closest functionality to what you need. Then simply override the methods of of that class. Hopefully my code is clean enough to make it simple enough to read.
+Extend one of the components to do what you want. Choose the one that is closed in functionality to what you want. Then add that component and any other components that you need to the room. Hopefully my code is clean enough to make it simple enough to read.
 
 For a basic example of a hello bot, look in example.py.

@@ -60,6 +60,5 @@ class Room:
         try:
             while 1:
                 self.connection.receive_data()
-                time.sleep(0.2)
         except KeyboardInterrupt:
             self.connection.close()
