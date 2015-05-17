@@ -1,7 +1,7 @@
 from . import connection as cn
+from . import exception
 
 import time
-import websocket
 
 class Room:
     """
@@ -14,14 +14,20 @@ class Room:
         self.roomname = roomname
         self.password = password
     
-        self.nickname = None
+        self.nickname = "Default"
 
         self.components = dict()
         
     def add_component(self, name, comp):
+        """
+        add_component(name, comp) -> None
+        
+        Add a component with a name to the list of components.
+        """
+        
         self.components[name] = comp
 
-    def join(self, nick):
+    def join(self, nick=None):
         """
         join(nick) -> None
 
@@ -29,7 +35,8 @@ class Room:
         It then sends its nick over.
         """
 
-        self.nickname = nick
+        if nick is not None:
+            self.nickname = nick
 
         self.connection.connect(self.roomname)
         
@@ -37,7 +44,7 @@ class Room:
                                     cn.build_json(passcode=self.password))
 
         self.connection.send_packet(cn.PTYPE["CLIENT"]["NICK"],
-                                    cn.build_json(name=nick))
+                                    cn.build_json(name=self.nickname))
 
     def ready(self):
         """
@@ -49,18 +56,28 @@ class Room:
         for i in self.components:
             self.components[i].ready()
 
-    def run(self):
+    def run(self, nick):
         """
         run() -> None
 
         Run the room.
         """
-        try:
-            while 1:
-                try:
-                    self.connection.receive_data()
-                except websocket.WebSocketConnectionClosedException:
-                    time.sleep(2)
-                    self.join(self.nickname)
-        except KeyboardInterrupt:
-            self.connection.close()
+        
+        self.nickname = nick
+        
+        while 1:
+            try:
+                self.connection.receive_data()
+            except exception.EuphoriaNoConnection:
+                #No connection previously initialized
+                self.join()
+                self.ready()
+            except exception.EuphoriaConnectionLost:
+                #An error from something
+                time.sleep(5)
+                self.join()
+                self.ready()
+            except KeyboardInterrupt:
+                #User halt
+                self.connection.close()
+                break

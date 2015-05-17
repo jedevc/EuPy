@@ -13,10 +13,7 @@ def main():
     hi.add_component("ping", euphoria.ping_component.PingComponent(hi))
     hi.add_component("hi", HiComponent(hi))
     
-    hi.join("HiBot")
-
-    hi.ready()
-    hi.run()
+    hi.run("HiBot")
 
 if __name__ == "__main__":
     main()

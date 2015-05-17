@@ -3,6 +3,8 @@ import json
 
 import threading
 
+from . import exception
+
 def build_json(**data):
     """
     build_json(**data) -> dict
@@ -15,9 +17,9 @@ def build_json(**data):
 #Different things that you or the server can send.
 PTYPE = {"CLIENT": {"PING": "ping-reply", "NICK": "nick", "WHO": "who",
                     "LOG": "log", "SEND": "send", "AUTH": "auth"},
-         "SERVER": {"NICK": "nick-reply", "WHO": "who-reply",
+        "SERVER": {"NICK": "nick-reply", "WHO": "who-reply",
                     "LOG": "log-reply", "SEND": "send-reply"},
-         "EVENT":  {"PING": "ping-event", "NICK": "nick-event",
+        "EVENT":  {"PING": "ping-event", "NICK": "nick-event",
                     "SEND": "send-event", "SNAPSHOT": "snapshot-event",
                     "JOIN": "join-event", "PART": "part-event"}
         }
@@ -70,8 +72,8 @@ class Connection:
         
         try:
             self.socket = websocket.create_connection(url)
-        except websocket.WebSocketException:
-            return
+        except (websocket.WebSocketException, IOError):
+            raise exception.EuphoriaConnectionLost()
 
     def close(self):
         """
@@ -91,8 +93,12 @@ class Connection:
         Send json data into the stream.
         """
 
-        if self.socket is not None:
+        if self.socket is None:
+            raise exception.EuphoriaNoConnection
+        try:
             self.socket.send(json.dumps(data))
+        except websocket.WebSocketException:
+            raise exception.EuphoriaConnectionLost()
 
     def receive_data(self):
         """
@@ -101,10 +107,14 @@ class Connection:
         Reveive a packet and send it to handle_packet() for proccessing.
         """
 
-        if self.socket is not None:
+        if self.socket is None:
+            raise exception.EuphoriaNoConnection
+            
+        try:
             raw = self.socket.recv()
-
             self.handle_packet(json.loads(raw))
+        except websocket.WebSocketException:
+            raise exception.EuphoriaConnectionLost()
 
     def send_packet(self, ptype, data, callback=None):
         """
