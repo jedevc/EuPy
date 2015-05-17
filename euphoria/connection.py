@@ -35,6 +35,8 @@ class Connection:
 
     def __init__(self):
         self.socket = None
+        self.room = ""
+        
         self.lock = threading.RLock()
         
         self.idcounter = 0
@@ -56,19 +58,20 @@ class Connection:
 
     def connect(self, room):
         """
-        connect(room) -> Bool
+        connect(room) -> None
 
         Connect to the given room. Cannot send messages without first
         connecting.
         """
 
+        self.room = room
+
         url = "wss://euphoria.io/room/" + room + "/ws"
         
         try:
             self.socket = websocket.create_connection(url)
-            return True
         except websocket.WebSocketException:
-            return False
+            return
 
     def close(self):
         """

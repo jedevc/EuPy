@@ -1,6 +1,7 @@
 from . import connection as cn
 
 import time
+import websocket
 
 class Room:
     """
@@ -22,7 +23,7 @@ class Room:
 
     def join(self, nick):
         """
-        join(nick) -> Bool
+        join(nick) -> None
 
         Connects to the room and submits the password if there is one.
         It then sends its nick over.
@@ -30,16 +31,13 @@ class Room:
 
         self.nickname = nick
 
-        if not self.connection.connect(self.roomname):
-            return False
+        self.connection.connect(self.roomname)
         
         self.connection.send_packet(cn.PTYPE["CLIENT"]["AUTH"],
                                     cn.build_json(passcode=self.password))
 
         self.connection.send_packet(cn.PTYPE["CLIENT"]["NICK"],
                                     cn.build_json(name=nick))
-        
-        return True
 
     def ready(self):
         """
@@ -59,6 +57,10 @@ class Room:
         """
         try:
             while 1:
-                self.connection.receive_data()
+                try:
+                    self.connection.receive_data()
+                except websocket.WebSocketConnectionClosedException:
+                    time.sleep(2)
+                    self.join(self.nickname)
         except KeyboardInterrupt:
             self.connection.close()
