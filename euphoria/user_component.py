@@ -11,11 +11,15 @@ class UserComponent(component.Component):
         super().__init__(owner)
 
         self.owner.connection.add_callback(cn.PTYPE["EVENT"]["NICK"],
-                                     self.handle_user)
+                                        self.handle_change)
+        self.owner.connection.add_callback(cn.PTYPE["EVENT"]["JOIN"],
+                                        self.handle_join)
+        self.owner.connection.add_callback(cn.PTYPE["EVENT"]["PART"],
+                                        self.handle_part)
         
         self.people = dict()
 
-    def handle_user(self, data):
+    def handle_change(self, data):
         """
         handle_user(data) -> None
         
@@ -28,6 +32,13 @@ class UserComponent(component.Component):
             self.people.pop(info["from"])
             
         self.people[info["to"]] = None
+    
+    def handle_join(self, data):
+        self.people[data["data"]["name"]] = None
+    
+    def handle_part(self, data):
+        if data["data"]["name"] in self.people:
+            self.people.pop(data["data"]["name"])
         
     def handle_who(self, data):
         """

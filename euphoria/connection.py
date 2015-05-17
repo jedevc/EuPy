@@ -19,7 +19,7 @@ PTYPE = {"CLIENT": {"PING": "ping-reply", "NICK": "nick", "WHO": "who",
                     "LOG": "log-reply", "SEND": "send-reply"},
          "EVENT":  {"PING": "ping-event", "NICK": "nick-event",
                     "SEND": "send-event", "SNAPSHOT": "snapshot-event",
-                    "JOIN": "join-event", "PART": "part"}
+                    "JOIN": "join-event", "PART": "part-event"}
         }
 
 class DictFields:
