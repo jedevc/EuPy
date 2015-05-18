@@ -16,16 +16,16 @@ class Room:
     
         self.nickname = "Default"
 
-        self.components = dict()
+        self.components = []
         
-    def add_component(self, name, comp):
+    def add_component(self, comp):
         """
-        add_component(name, comp) -> None
+        add_component(comp) -> None
         
-        Add a component with a name to the list of components.
+        Add a component to the list of components.
         """
         
-        self.components[name] = comp
+        self.components.append(comp)
 
     def join(self, nick=None):
         """
@@ -54,7 +54,7 @@ class Room:
         """
         
         for i in self.components:
-            self.components[i].ready()
+            i.ready()
 
     def run(self, nick=None):
         """

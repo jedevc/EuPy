@@ -10,8 +10,8 @@ class HiComponent(euphoria.chat_component.ChatComponent):
 
 def main():
     hi = euphoria.room.Room("test")
-    hi.add_component("ping", euphoria.ping_component.PingComponent(hi))
-    hi.add_component("hi", HiComponent(hi))
+    hi.add_component(euphoria.ping_component.PingComponent(hi))
+    hi.add_component(HiComponent(hi))
     
     hi.run("HiBot")
 
