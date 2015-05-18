@@ -95,6 +95,7 @@ class Connection:
 
         if self.socket is None:
             raise exception.EuphoriaNoConnection
+
         try:
             self.socket.send(json.dumps(data))
         except websocket.WebSocketException:

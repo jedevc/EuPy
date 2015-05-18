@@ -56,14 +56,15 @@ class Room:
         for i in self.components:
             self.components[i].ready()
 
-    def run(self, nick):
+    def run(self, nick=None):
         """
         run() -> None
 
         Run the room.
         """
         
-        self.nickname = nick
+        if nick is not None:
+            self.nickname = nick
         
         while 1:
             try:
