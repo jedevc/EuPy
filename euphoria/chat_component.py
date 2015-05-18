@@ -11,7 +11,7 @@ class ChatComponent(component.Component):
         super().__init__(owner)
 
         self.owner.connection.add_callback(cn.PTYPE["EVENT"]["SEND"],
-                                    self.handle_message)
+                                            self.handle_message)
 
     def handle_message(self, data):
         """

@@ -11,11 +11,11 @@ class UserComponent(component.Component):
         super().__init__(owner)
 
         self.owner.connection.add_callback(cn.PTYPE["EVENT"]["NICK"],
-                                        self.handle_change)
+                                            self.handle_change)
         self.owner.connection.add_callback(cn.PTYPE["EVENT"]["JOIN"],
-                                        self.handle_join)
+                                            self.handle_join)
         self.owner.connection.add_callback(cn.PTYPE["EVENT"]["PART"],
-                                        self.handle_part)
+                                            self.handle_part)
         
         self.people = dict()
 
@@ -54,4 +54,4 @@ class UserComponent(component.Component):
 
     def ready(self):
         self.owner.connection.send_packet(cn.PTYPE["CLIENT"]["WHO"], "",
-                                    self.handle_who)
+                                            self.handle_who)

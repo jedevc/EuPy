@@ -13,7 +13,7 @@ class PingComponent(component.Component):
         super().__init__(owner)
 
         self.owner.connection.add_callback(cn.PTYPE["EVENT"]["PING"],
-                                    self.handle_ping)
+                                            self.handle_ping)
 
     def handle_ping(self, packet):
         """
@@ -24,4 +24,4 @@ class PingComponent(component.Component):
         """
 
         self.owner.connection.send_packet(cn.PTYPE["CLIENT"]["PING"],
-                                    cn.build_json(time=int(time.time())))
+                                        cn.build_json(time=int(time.time())))

@@ -17,17 +17,12 @@ def build_json(**data):
 #Different things that you or the server can send.
 PTYPE = {"CLIENT": {"PING": "ping-reply", "NICK": "nick", "WHO": "who",
                     "LOG": "log", "SEND": "send", "AUTH": "auth"},
-        "SERVER": {"NICK": "nick-reply", "WHO": "who-reply",
+        "SERVER":  {"NICK": "nick-reply", "WHO": "who-reply",
                     "LOG": "log-reply", "SEND": "send-reply"},
-        "EVENT":  {"PING": "ping-event", "NICK": "nick-event",
+        "EVENT":   {"PING": "ping-event", "NICK": "nick-event",
                     "SEND": "send-event", "SNAPSHOT": "snapshot-event",
                     "JOIN": "join-event", "PART": "part-event"}
         }
-
-class DictFields:
-    def __init__(self, dictionary):
-        for k, v in dictionary:
-            setattr(self, k, v)
 
 class Connection:
     """
