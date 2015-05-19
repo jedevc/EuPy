@@ -17,7 +17,8 @@ PTYPE = {"CLIENT": {"PING": "ping-reply", "NICK": "nick", "WHO": "who",
                     "LOG": "log-reply", "SEND": "send-reply"},
         "EVENT":   {"PING": "ping-event", "NICK": "nick-event",
                     "SEND": "send-event", "SNAPSHOT": "snapshot-event",
-                    "JOIN": "join-event", "PART": "part-event"}
+                    "JOIN": "join-event", "PART": "part-event"},
+        "ALWAYS": "always"
         }
 
 class Connection:
@@ -34,6 +35,7 @@ class Connection:
 
         self.type_callbacks = dict()
         self.id_callbacks = dict()
+        self.always_callbacks = []
 
     def add_callback(self, ptype, callback):
         """
@@ -42,10 +44,23 @@ class Connection:
         Add a callback so that when a packet of type ptype arrives, it will be
         proccessed by the callback.
         """
-
-        if ptype not in self.type_callbacks:
-            self.type_callbacks[ptype] = []
-        self.type_callbacks[ptype].append(callback)
+        
+        if ptype == PTYPE["ALWAYS"]:
+            self.always_callbacks.append(callback)
+        else:
+            if ptype not in self.type_callbacks:
+                self.type_callbacks[ptype] = []
+            self.type_callbacks[ptype].append(callback)
+            
+    def send_always_callback(self):
+        """
+        send_always_callback() -> None
+        
+        Send a callback to all the items in that callback list.
+        """
+        
+        for i in self.always_callbacks:
+            i()
 
     def connect(self, room):
         """

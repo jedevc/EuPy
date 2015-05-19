@@ -77,6 +77,7 @@ class Room:
                     break
                 
                 if self.connection.receive_data():
+                    self.connection.send_always_callback()
                     attempts = 0
                 else:
                     #No connection initialized
