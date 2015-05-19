@@ -1,5 +1,4 @@
 from . import connection as cn
-from . import exception
 
 import time
 
@@ -63,21 +62,29 @@ class Room:
         Run the room.
         """
         
+        attempts = 0
+        
         if nick is not None:
             self.nickname = nick
         
+        self.join()
+        self.ready()
+        
         while 1:
             try:
-                self.connection.receive_data()
-            except exception.EuphoriaNoConnection:
-                #No connection previously initialized
-                self.join()
-                self.ready()
-            except exception.EuphoriaConnectionLost:
-                #An error from something
-                time.sleep(5)
-                self.join()
-                self.ready()
+                #Check for multiple failures in a row
+                if attempts >= 2:
+                    break
+                
+                if self.connection.receive_data():
+                    attempts = 0
+                else:
+                    #No connection initialized
+                    time.sleep(5)
+                    self.join()
+                    self.ready()
+                    
+                    attempts += 1
             except KeyboardInterrupt:
                 #User halt
                 self.connection.close()

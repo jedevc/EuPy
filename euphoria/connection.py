@@ -1,10 +1,6 @@
 import websocket
 import json
 
-import threading
-
-from . import exception
-
 def build_json(**data):
     """
     build_json(**data) -> dict
@@ -33,8 +29,6 @@ class Connection:
     def __init__(self):
         self.socket = None
         self.room = ""
-        
-        self.lock = threading.RLock()
         
         self.idcounter = 0
 
@@ -68,7 +62,7 @@ class Connection:
         try:
             self.socket = websocket.create_connection(url)
         except (websocket.WebSocketException, IOError):
-            raise exception.EuphoriaConnectionLost()
+            self.socket = None
 
     def close(self):
         """
@@ -83,34 +77,39 @@ class Connection:
 
     def send_json(self, data):
         """
-        send_json(data) -> None
+        send_json(data) -> Bool
 
-        Send json data into the stream.
+        Send json data into the stream. Returns false on message fail.
         """
 
         if self.socket is None:
-            raise exception.EuphoriaNoConnection
+            return False
 
         try:
             self.socket.send(json.dumps(data))
         except websocket.WebSocketException:
-            raise exception.EuphoriaConnectionLost()
+            self.socket = None
+            
+        return True
 
     def receive_data(self):
         """
-        reveive_data() -> None
+        reveive_data() -> Bool
 
         Reveive a packet and send it to handle_packet() for proccessing.
+        Returns false on message fail.
         """
 
         if self.socket is None:
-            raise exception.EuphoriaNoConnection
+            return False
             
         try:
             raw = self.socket.recv()
             self.handle_packet(json.loads(raw))
         except websocket.WebSocketException:
-            raise exception.EuphoriaConnectionLost()
+            self.socket = None
+            
+        return True
 
     def send_packet(self, ptype, data, callback=None):
         """
@@ -120,18 +119,15 @@ class Connection:
         callback entry for when a reply is received.
         """
 
-        with self.lock:
-            pid = self.idcounter
-            self.idcounter += 1
+        pid = self.idcounter
+        self.idcounter += 1
 
-            packet = {"id": str(pid),
-                    "type": ptype,
-                    "data": data}
+        packet = {"id": str(pid), "type": ptype, "data": data}
 
-            self.send_json(packet)
+        self.send_json(packet)
 
-            if callback is not None:
-                self.id_callbacks[str(pid)] = callback
+        if callback is not None:
+            self.id_callbacks[str(pid)] = callback
 
     def handle_packet(self, packet):
         """
