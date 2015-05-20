@@ -1,6 +1,9 @@
 import websocket
 import json
 
+import time
+import threading
+
 def build_json(**data):
     """
     build_json(**data) -> dict
@@ -36,6 +39,10 @@ class Connection:
         self.type_callbacks = dict()
         self.id_callbacks = dict()
         self.always_callbacks = []
+        
+        self.thread_kill = False
+        self.always_thread = threading.Thread(target=self.call_always_callback)
+        self.always_thread.start()
 
     def add_callback(self, ptype, callback):
         """
@@ -52,15 +59,19 @@ class Connection:
                 self.type_callbacks[ptype] = []
             self.type_callbacks[ptype].append(callback)
             
-    def send_always_callback(self):
+    def call_always_callback(self):
         """
         send_always_callback() -> None
         
-        Send a callback to all the items in that callback list.
+        Send a callback to all the items in that callback list and wait for a
+        while.
         """
         
-        for i in self.always_callbacks:
-            i()
+        while not self.thread_kill:
+            for i in self.always_callbacks:
+                i()
+                
+            time.sleep(1)
 
     def connect(self, room):
         """
@@ -86,9 +97,13 @@ class Connection:
         Close the connection to the room off nicely.
         """
 
+        self.thread_kill = True
+
         if self.socket is not None:
             self.socket.close()
             self.socket = None
+            
+        self.always_thread.join()
 
     def send_json(self, data):
         """
