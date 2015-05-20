@@ -113,17 +113,15 @@ class Connection:
         Send json data into the stream. Returns false on message fail.
         """
 
-        #This is locked to prevent multiple threads from accessing the message
-        with self.lock:
-            if self.socket is None:
-                return False
+        if self.socket is None:
+            return False
 
-            try:
-                self.socket.send(json.dumps(data))
-            except websocket.WebSocketException:
-                self.socket = None
+        try:
+            self.socket.send(json.dumps(data))
+        except websocket.WebSocketException:
+            self.socket = None
                 
-            return True
+        return True
 
     def receive_data(self):
         """
@@ -152,15 +150,17 @@ class Connection:
         callback entry for when a reply is received.
         """
 
-        pid = self.idcounter
-        self.idcounter += 1
+        #This is locked to prevent multiple threads from accessing the message
+        with self.lock:
+            pid = self.idcounter
+            self.idcounter += 1
 
-        packet = {"id": str(pid), "type": ptype, "data": data}
+            packet = {"id": str(pid), "type": ptype, "data": data}
 
-        self.send_json(packet)
+            self.send_json(packet)
 
-        if callback is not None:
-            self.id_callbacks[str(pid)] = callback
+            if callback is not None:
+                self.id_callbacks[str(pid)] = callback
 
     def handle_packet(self, packet):
         """
