@@ -41,6 +41,7 @@ class Connection:
         self.always_callbacks = []
         
         self.thread_kill = False
+        self.lock = threading.RLock()
         self.always_thread = threading.Thread(target=self.call_always_callback)
         self.always_thread.start()
 
@@ -112,15 +113,17 @@ class Connection:
         Send json data into the stream. Returns false on message fail.
         """
 
-        if self.socket is None:
-            return False
+        #This is locked to prevent multiple threads from accessing the message
+        with self.lock:
+            if self.socket is None:
+                return False
 
-        try:
-            self.socket.send(json.dumps(data))
-        except websocket.WebSocketException:
-            self.socket = None
-            
-        return True
+            try:
+                self.socket.send(json.dumps(data))
+            except websocket.WebSocketException:
+                self.socket = None
+                
+            return True
 
     def receive_data(self):
         """
