@@ -17,7 +17,7 @@ class UserComponent(component.Component):
         self.owner.connection.add_callback(cn.PTYPE["EVENT"]["PART"],
                                             self.handle_part)
         
-        self.people = dict()
+        self.people = []
 
     def handle_change(self, data):
         """
@@ -29,16 +29,16 @@ class UserComponent(component.Component):
         info = data["data"]
         
         if info["from"] in self.people:
-            self.people.pop(info["from"])
+            self.people.remove(info["from"])
             
-        self.people[info["to"]] = None
+        self.people.append(info["to"])
     
     def handle_join(self, data):
-        self.people[data["data"]["name"]] = None
+        self.people.append(data["data"]["name"])
     
     def handle_part(self, data):
         if data["data"]["name"] in self.people:
-            self.people.pop(data["data"]["name"])
+            self.people.remove(data["data"]["name"])
         
     def handle_who(self, data):
         """
@@ -47,10 +47,10 @@ class UserComponent(component.Component):
         Update the list of who is in the room.
         """
         
-        self.people = dict()
+        self.people.clear()
         
         for user in data["data"]["listing"]:
-            self.people[user["name"]] = None
+            self.people.append(user["name"])
 
     def ready(self):
         self.owner.connection.send_packet(cn.PTYPE["CLIENT"]["WHO"], "",
