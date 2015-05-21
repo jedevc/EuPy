@@ -33,13 +33,13 @@ class Connection:
     def __init__(self):
         self.socket = None
         self.room = ""
-        
+
         self.idcounter = 0
 
         self.type_callbacks = dict()
         self.id_callbacks = dict()
         self.always_callbacks = []
-        
+
         self.thread_kill = False
         self.lock = threading.RLock()
         self.always_thread = threading.Thread(target=self.call_always_callback)
@@ -52,7 +52,7 @@ class Connection:
         Add a callback so that when a packet of type ptype arrives, it will be
         proccessed by the callback.
         """
-        
+
         if ptype == PTYPE["ALWAYS"]:
             self.always_callbacks.append(callback)
         else:
@@ -99,12 +99,12 @@ class Connection:
         """
 
         self.thread_kill = True
+        self.always_thread.join()
 
         if self.socket is not None:
-            self.socket.close()
-            self.socket = None
-            
-        self.always_thread.join()
+            with self.lock:
+                self.socket.close()
+                self.socket = None
 
     def send_json(self, data):
         """

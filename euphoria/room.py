@@ -74,7 +74,8 @@ class Room:
             try:
                 #Check for multiple failures in a row
                 if attempts >= 2:
-                    break
+                    self.connection.close()
+                    return
                 
                 if self.connection.receive_data():
                     attempts = 0
@@ -88,4 +89,4 @@ class Room:
             except KeyboardInterrupt:
                 #User halt
                 self.connection.close()
-                break
+                return
