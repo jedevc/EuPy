@@ -13,7 +13,7 @@ def build_json(**data):
 
     return data
 
-#Different things that you or the server can send.
+#Different packet types that you or the server can send.
 PTYPE = {"CLIENT": {"PING": "ping-reply", "NICK": "nick", "WHO": "who",
                     "LOG": "log", "SEND": "send", "AUTH": "auth"},
         "SERVER":  {"NICK": "nick-reply", "WHO": "who-reply",
@@ -36,10 +36,12 @@ class Connection:
 
         self.idcounter = 0
 
+        #Different types of callbacks
         self.type_callbacks = dict()
         self.id_callbacks = dict()
         self.always_callbacks = []
 
+        #Thread stuff
         self.thread_kill = False
         self.lock = threading.RLock()
         self.always_thread = threading.Thread(target=self.call_always_callback)

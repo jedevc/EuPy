@@ -13,7 +13,7 @@ class Room:
         self.roomname = roomname
         self.password = password
     
-        self.nickname = "Default"
+        self.nickname = "DefaultBot"
 
         self.components = []
         
