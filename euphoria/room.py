@@ -62,13 +62,11 @@ class Room:
         Run the room.
         """
         
+        first = True
         attempts = 0
         
         if nick is not None:
             self.nickname = nick
-        
-        self.join()
-        self.ready()
         
         while 1:
             try:
@@ -81,11 +79,14 @@ class Room:
                     attempts = 0
                 else:
                     #No connection initialized
-                    time.sleep(5)
+                    if first:
+                        first = False
+                    else:
+                        time.sleep(5)
+                        attempts += 1
+                        
                     self.join()
                     self.ready()
-                    
-                    attempts += 1
             except KeyboardInterrupt:
                 #User halt
                 self.connection.close()
