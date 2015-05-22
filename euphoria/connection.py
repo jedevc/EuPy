@@ -38,7 +38,6 @@ class Connection:
         #Different types of callbacks
         self.type_callbacks = dict()
         self.id_callbacks = dict()
-        self.always_callbacks = []
 
         #Thread stuff
         self.lock = threading.RLock()
