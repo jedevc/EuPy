@@ -20,8 +20,7 @@ PTYPE = {"CLIENT": {"PING": "ping-reply", "NICK": "nick", "WHO": "who",
                     "LOG": "log-reply", "SEND": "send-reply"},
         "EVENT":   {"PING": "ping-event", "NICK": "nick-event",
                     "SEND": "send-event", "SNAPSHOT": "snapshot-event",
-                    "JOIN": "join-event", "PART": "part-event"},
-        "ALWAYS": "always"
+                    "JOIN": "join-event", "PART": "part-event"}
         }
 
 class Connection:
@@ -42,11 +41,8 @@ class Connection:
         self.always_callbacks = []
 
         #Thread stuff
-        self.thread_kill = False
         self.lock = threading.RLock()
-        self.always_thread = threading.Thread(target=self.call_always_callback)
-        self.always_thread.start()
-
+        
     def add_callback(self, ptype, callback):
         """
         add_callback(ptype, callback) -> None
@@ -55,26 +51,9 @@ class Connection:
         proccessed by the callback.
         """
 
-        if ptype == PTYPE["ALWAYS"]:
-            self.always_callbacks.append(callback)
-        else:
-            if ptype not in self.type_callbacks:
-                self.type_callbacks[ptype] = []
-            self.type_callbacks[ptype].append(callback)
-            
-    def call_always_callback(self):
-        """
-        send_always_callback() -> None
-        
-        Send a callback to all the items in that callback list and wait for a
-        while.
-        """
-        
-        while not self.thread_kill:
-            for i in self.always_callbacks:
-                i()
-                
-            time.sleep(1)
+        if ptype not in self.type_callbacks:
+            self.type_callbacks[ptype] = []
+        self.type_callbacks[ptype].append(callback)
 
     def connect(self, room):
         """
@@ -99,10 +78,7 @@ class Connection:
 
         Close the connection to the room off nicely.
         """
-
-        self.thread_kill = True
-        self.always_thread.join()
-
+        
         if self.socket is not None:
             with self.lock:
                 self.socket.close()

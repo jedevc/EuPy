@@ -54,6 +54,18 @@ class Room:
         
         for i in self.components:
             i.ready()
+            
+    def quit(self):
+        """
+        quit() -> None
+        
+        Performs neccessary cleanup.
+        """
+        
+        for i in self.components:
+            i.quit()
+            
+        self.connection.close()
 
     def run(self, nick=None):
         """
@@ -72,7 +84,7 @@ class Room:
             try:
                 #Check for multiple failures in a row
                 if attempts >= 2:
-                    self.connection.close()
+                    self.quit()
                     return
                 
                 if self.connection.receive_data():
@@ -89,5 +101,5 @@ class Room:
                     self.ready()
             except KeyboardInterrupt:
                 #User halt
-                self.connection.close()
+                self.quit()
                 return

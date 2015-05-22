@@ -4,3 +4,6 @@ class Component:
 
     def ready(self):
         pass
+    
+    def quit(self):
+        pass
