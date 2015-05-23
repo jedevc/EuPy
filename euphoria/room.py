@@ -1,6 +1,8 @@
 from . import connection as cn
 
 import time
+import signal
+import sys
 
 class Room:
     """
@@ -66,6 +68,16 @@ class Room:
             i.quit()
             
         self.connection.close()
+        
+    def sigterm_handler(self, signal, frame):
+        """
+        sigterm_handler(signal, frame) -> None
+        
+        Use to quit properly when there is a SIGTERM. NOT to be called directly.
+        """
+        
+        self.quit()
+        sys.exit()
 
     def run(self, nick=None):
         """
@@ -79,6 +91,9 @@ class Room:
         
         if nick is not None:
             self.nickname = nick
+        
+        #Handle process kills.
+        signal.signal(signal.SIGTERM, self.sigterm_handler)
         
         while 1:
             try:
