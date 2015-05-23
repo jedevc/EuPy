@@ -1,5 +1,5 @@
 # Python API for euphoria.io
-An API that wraps sockets in a nice interface. Note: this library is only compatible with python3 at the moment. I will definitely work on making it available for python2 at some point in the future.
+An API that wraps sockets in a nice interface. Note: this library is only compatible with python3.
 
 # How to set up
 At the moment, there are no setup things. So, until I make one, here are some basic instructions on how to download this library and run the example:
