@@ -6,7 +6,7 @@ import sys
 
 class Room:
     """
-    A room object that simply holds components and a connection.
+    A base room object that simply holds components and a connection.
     """
 
     def __init__(self, roomname, password=None):
@@ -15,37 +15,31 @@ class Room:
         self.roomname = roomname
         self.password = password
     
-        self.nickname = "DefaultBot"
+        self.nickname = None
 
-        self.components = []
-        
-    def add_component(self, comp):
+    def join(self):
         """
-        add_component(comp) -> None
+        join() -> None
         
-        Add a component to the list of components.
+        Connects to the room and sends the passcode.
         """
         
-        self.components.append(comp)
-
-    def join(self, nick=None):
-        """
-        join(nick) -> None
-
-        Connects to the room and submits the password if there is one.
-        It then sends its nick over.
-        """
-
-        if nick is not None:
-            self.nickname = nick
-
         self.connection.connect(self.roomname)
         
-        self.connection.send_packet(cn.PTYPE["CLIENT"]["AUTH"],
-                                    cn.build_json(passcode=self.password))
+        if self.password is not None:
+            self.connection.send_packet(cn.PTYPE["CLIENT"]["AUTH"],
+                                        cn.build_json(passcode=self.password))
 
-        self.connection.send_packet(cn.PTYPE["CLIENT"]["NICK"],
-                                    cn.build_json(name=self.nickname))
+    def identify(self):
+        """
+        identify() -> None
+
+        Identifies with the server according to the nickname.
+        """
+
+        if self.nickname is not None:
+            self.connection.send_packet(cn.PTYPE["CLIENT"]["NICK"],
+                                        cn.build_json(name=self.nickname))
 
     def ready(self):
         """
@@ -54,8 +48,7 @@ class Room:
         Do last minute setup for the room.
         """
         
-        for i in self.components:
-            i.ready()
+        pass
             
     def quit(self):
         """
@@ -63,9 +56,6 @@ class Room:
         
         Performs neccessary cleanup.
         """
-        
-        for i in self.components:
-            i.quit()
             
         self.connection.close()
         
@@ -79,7 +69,7 @@ class Room:
         self.quit()
         sys.exit()
 
-    def run(self, nick=None):
+    def run(self):
         """
         run() -> None
 
@@ -88,9 +78,6 @@ class Room:
         
         first = True
         attempts = 0
-        
-        if nick is not None:
-            self.nickname = nick
         
         #Handle process kills.
         signal.signal(signal.SIGTERM, self.sigterm_handler)
@@ -113,6 +100,7 @@ class Room:
                         attempts += 1
                         
                     self.join()
+                    self.identify()
                     self.ready()
             except KeyboardInterrupt:
                 #User halt

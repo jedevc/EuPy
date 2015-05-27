@@ -1,16 +1,16 @@
 from . import connection as cn
 
-from . import component
+from . import room
 
-class ChatComponent(component.Component):
+class ChatRoom(room.Room):
     """
     A chat component allows you to talk and process chats from the room.
     """
 
-    def __init__(self, owner):
-        super().__init__(owner)
+    def __init__(self, roomname, password=None):
+        super().__init__(roomname, password)
 
-        self.owner.connection.add_callback(cn.PTYPE["EVENT"]["SEND"],
+        self.connection.add_callback(cn.PTYPE["EVENT"]["SEND"],
                                             self.handle_message)
 
     def handle_message(self, data):
@@ -38,5 +38,5 @@ class ChatComponent(component.Component):
         Send a message out to the world!
         """
 
-        self.owner.connection.send_packet(cn.PTYPE["CLIENT"]["SEND"],
+        self.connection.send_packet(cn.PTYPE["CLIENT"]["SEND"],
                                 cn.build_json(content=message, parent=parent))
