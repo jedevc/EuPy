@@ -59,13 +59,13 @@ class Room:
             
         self.connection.close()
         
-    def sigterm_handler(self, signal, frame):
+    def __sigterm_handler(self, signal, frame):
         """
         sigterm_handler(signal, frame) -> None
         
         Use to quit properly when there is a SIGTERM. NOT to be called directly.
         """
-        
+
         self.quit()
         sys.exit()
 
@@ -80,7 +80,7 @@ class Room:
         attempts = 0
         
         #Handle process kills.
-        signal.signal(signal.SIGTERM, self.sigterm_handler)
+        signal.signal(signal.SIGTERM, self.__sigterm_handler)
         
         while 1:
             try:

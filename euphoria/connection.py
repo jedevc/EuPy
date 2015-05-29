@@ -21,7 +21,7 @@ PTYPE = {"CLIENT": {"PING": "ping-reply", "NICK": "nick", "WHO": "who",
         "EVENT":   {"PING": "ping-event", "NICK": "nick-event",
                     "SEND": "send-event", "SNAPSHOT": "snapshot-event",
                     "JOIN": "join-event", "PART": "part-event"}
-        }
+}
 
 class Connection:
     """
