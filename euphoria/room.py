@@ -1,12 +1,12 @@
 from . import connection as cn
+from . import executable
 
 import time
-import signal
-import sys
 
-class Room:
+class Room(executable.Executable):
     """
-    A base room object that simply holds components and a connection.
+    A base room object that simply holds a connection and simple methods for
+    interfacing with the room.
     """
 
     def __init__(self, roomname, password=None):
@@ -58,16 +58,6 @@ class Room:
         """
             
         self.connection.close()
-        
-    def __exit_program(self, signal, frame):
-        """
-        __exit_program(signal, frame) -> None
-        
-        Use to quit properly when there is the program is terminated.
-        """
-
-        self.quit()
-        sys.exit()
 
     def run(self):
         """
@@ -78,10 +68,6 @@ class Room:
         
         first = True
         attempts = 0
-        
-        #Handle process kills.
-        signal.signal(signal.SIGTERM, self.__exit_program)
-        signal.signal(signal.SIGINT, self.__exit_program)
         
         while 1:
             #Check for multiple failures in a row

@@ -4,7 +4,7 @@ from . import room
 
 class NickRoom(room.Room):
     """
-    A nick component allows a user to quickly change names.
+    A nick room allows a user to quickly change names.
     """
 
     def __init__(self, roomname, password=None):

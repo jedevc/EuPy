@@ -6,7 +6,7 @@ import time
 
 class PingRoom(room.Room):
     """
-    A ping component maintains a connection with the server.
+    A ping room maintains a connection with the server.
     """
 
     def __init__(self, roomname, password=None):

@@ -4,7 +4,7 @@ from . import room
 
 class UserRoom(room.Room):
     """
-    A user component contains a list of all the current users in the room.
+    A user room contains a list of all the current users in the room.
     """
 
     def __init__(self, roomname, password=None):

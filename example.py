@@ -12,7 +12,7 @@ class HiBot(eu.ping_room.PingRoom, eu.chat_room.ChatRoom):
 
 def main():
     hi = HiBot("test")
-    hi.run()
+    eu.executable.start(hi)
 
 if __name__ == "__main__":
     main()

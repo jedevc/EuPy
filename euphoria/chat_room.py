@@ -4,7 +4,7 @@ from . import room
 
 class ChatRoom(room.Room):
     """
-    A chat component allows you to talk and process chats from the room.
+    A chat room allows you to talk and process chats from the room.
     """
 
     def __init__(self, roomname, password=None):
