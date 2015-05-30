@@ -56,8 +56,9 @@ class Room(executable.Executable):
         
         Performs neccessary cleanup.
         """
-            
+
         self.connection.close()
+        self.connection = None
 
     def run(self):
         """
@@ -69,7 +70,7 @@ class Room(executable.Executable):
         first = True
         attempts = 0
         
-        while 1:
+        while self.connection is not None:
             #Check for multiple failures in a row
             if attempts >= 2:
                 self.quit()

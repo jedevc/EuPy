@@ -78,8 +78,9 @@ class Connection:
         Close the connection to the room off nicely.
         """
         
-        if self.socket is not None:
-            with self.lock:
+        with self.lock:
+            if self.socket is not None:
+                self.socket.abort()
                 self.socket.close()
                 self.socket = None
 
