@@ -57,8 +57,9 @@ class Room(executable.Executable):
         Performs neccessary cleanup.
         """
 
-        self.connection.close()
-        self.connection = None
+        if self.connection is not None:
+            self.connection.close()
+            self.connection = None
 
     def run(self):
         """
@@ -86,6 +87,7 @@ class Room(executable.Executable):
                     time.sleep(5)
                     attempts += 1
                     
-                self.join()
-                self.identify()
-                self.ready()
+                if self.connection != None:
+                    self.join()
+                    self.identify()
+                    self.ready()

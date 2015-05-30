@@ -1,6 +1,8 @@
 import signal
 import sys
 
+import threading
+
 class Executable:
     """
     A class that can be executed.
@@ -23,9 +25,12 @@ def start(e):
     Note: This function should only be called from the main thread.
     """
     
+    lock = threading.RLock()
+    
     def exit_program(signal, frame):
-        e.quit()
-        sys.exit()
+        with lock:
+            e.quit()
+            sys.exit()
 
     signal.signal(signal.SIGTERM, exit_program)
     signal.signal(signal.SIGINT, exit_program)
