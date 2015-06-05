@@ -7,7 +7,9 @@ class HiBot(eu.ping_room.PingRoom, eu.chat_room.ChatRoom):
         self.nickname = "HiBot"
 
     def handle_chat(self, message):
-        if "hi" in message["content"].lower():
+        if message["content"] == "!ping":
+            self.send_chat("Pong!", message["id"])
+        elif "hi" in message["content"].lower():
             self.send_chat("Hi there!", message["id"])
 
 def main():
