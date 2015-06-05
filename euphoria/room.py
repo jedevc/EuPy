@@ -27,7 +27,7 @@ class Room(executable.Executable):
         self.connection.connect(self.roomname)
         
         if self.password is not None:
-            self.connection.send_packet(cn.PTYPE["CLIENT"]["AUTH"],
+            self.connection.send_packet(cn.PTYPE["COMMAND"]["AUTH"],
                                         cn.build_json(passcode=self.password))
 
     def identify(self):
@@ -38,7 +38,7 @@ class Room(executable.Executable):
         """
 
         if self.nickname is not None:
-            self.connection.send_packet(cn.PTYPE["CLIENT"]["NICK"],
+            self.connection.send_packet(cn.PTYPE["COMMAND"]["NICK"],
                                         cn.build_json(name=self.nickname))
 
     def ready(self):

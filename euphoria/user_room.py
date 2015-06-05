@@ -65,5 +65,5 @@ class UserRoom(room.Room):
             self.people.append(user["name"])
 
     def ready(self):
-        self.connection.send_packet(cn.PTYPE["CLIENT"]["WHO"], "",
+        self.connection.send_packet(cn.PTYPE["COMMAND"]["WHO"], "",
                                             self.handle_who)

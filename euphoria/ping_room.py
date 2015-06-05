@@ -23,5 +23,5 @@ class PingRoom(room.Room):
         connection.
         """
 
-        self.connection.send_packet(cn.PTYPE["CLIENT"]["PING"],
+        self.connection.send_packet(cn.PTYPE["REPLY"]["PING"],
                                         cn.build_json(time=int(time.time())))

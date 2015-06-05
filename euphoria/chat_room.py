@@ -38,5 +38,5 @@ class ChatRoom(room.Room):
         Send a message out to the world!
         """
 
-        self.connection.send_packet(cn.PTYPE["CLIENT"]["SEND"],
+        self.connection.send_packet(cn.PTYPE["COMMAND"]["SEND"],
                                 cn.build_json(content=message, parent=parent))
