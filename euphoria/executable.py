@@ -25,7 +25,7 @@ def start(e):
     Note: This function should only be called from the main thread.
     """
     
-    lock = threading.RLock()
+    lock = threading.Lock()
     
     def exit_program(signal, frame):
         with lock:
