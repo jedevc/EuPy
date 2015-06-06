@@ -16,7 +16,7 @@ def build_json(**data):
 #Different packet types that you or the server can send.
 PTYPE = {"COMMAND": {"NICK": "nick", "WHO": "who", "LOG": "log", "SEND": "send",
                     "AUTH": "auth"},
-        "REPLY":  {"PING": "ping", "NICK": "nick-reply", "WHO": "who-reply",
+        "REPLY":  {"PING": "ping-reply", "NICK": "nick-reply", "WHO": "who-reply",
                     "LOG": "log-reply", "SEND": "send-reply"},
         "EVENT":   {"PING": "ping-event", "NICK": "nick-event",
                     "SEND": "send-event", "SNAPSHOT": "snapshot-event",
