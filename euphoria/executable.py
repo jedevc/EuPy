@@ -25,12 +25,11 @@ def start(e):
     Note: This function should only be called from the main thread.
     """
     
-    lock = threading.Lock()
-    
-    def exit_program(signal, frame):
-        with lock:
-            e.quit()
-            sys.exit()
+    def exit_program(s, f):
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+        signal.signal(signal.SIGINT, signal.SIG_IGN)
+        
+        e.quit()
 
     signal.signal(signal.SIGTERM, exit_program)
     signal.signal(signal.SIGINT, exit_program)

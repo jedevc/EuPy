@@ -24,11 +24,12 @@ class Room(executable.Executable):
         Connects to the room and sends the passcode.
         """
         
-        self.connection.connect(self.roomname)
-        
-        if self.password is not None:
-            self.connection.send_packet(cn.PTYPE["COMMAND"]["AUTH"],
-                                        cn.build_json(passcode=self.password))
+        if self.connection is not None:
+            self.connection.connect(self.roomname)
+            
+            if self.password is not None:
+                self.connection.send_packet(cn.PTYPE["COMMAND"]["AUTH"],
+                                            cn.build_json(passcode=self.password))
 
     def identify(self):
         """
@@ -37,9 +38,10 @@ class Room(executable.Executable):
         Identifies with the server according to the nickname.
         """
 
-        if self.nickname is not None:
-            self.connection.send_packet(cn.PTYPE["COMMAND"]["NICK"],
-                                        cn.build_json(name=self.nickname))
+        if self.connection is not None:
+            if self.nickname is not None:
+                self.connection.send_packet(cn.PTYPE["COMMAND"]["NICK"],
+                                            cn.build_json(name=self.nickname))
 
     def ready(self):
         """
@@ -75,19 +77,26 @@ class Room(executable.Executable):
             #Check for multiple failures in a row
             if attempts >= 2:
                 self.quit()
-                return
+                break
             
-            if self.connection.receive_data():
-                attempts = 0
-            else:
-                #No connection initialized
-                if first:
-                    first = False
+            #Check if quit
+            if self.connection is None:
+                break
+            
+            #Receive data and handle connection errors
+            try:
+                if self.connection.receive_data():
+                    attempts = 0
                 else:
-                    time.sleep(5)
-                    attempts += 1
-                    
-                if self.connection != None:
+                    #No connection initialized
+                    if first:
+                        first = False
+                    else:
+                        time.sleep(5)
+                        attempts += 1
+
                     self.join()
                     self.identify()
                     self.ready()
+            except OSError:  #Catching some exception that occurs in single threading bots
+                break

@@ -67,7 +67,7 @@ class Connection:
         url = "wss://euphoria.io/room/" + room + "/ws"
         
         try:
-            self.socket = websocket.create_connection(url)
+            self.socket = websocket.create_connection(url, enable_multithread=True)
         except (websocket.WebSocketException, IOError):
             self.socket = None
 
@@ -97,7 +97,8 @@ class Connection:
         try:
             self.socket.send(json.dumps(data))
         except websocket.WebSocketException:
-            self.socket = None
+            with self.lock:
+                self.socket = None
                 
         return True
 
@@ -116,7 +117,8 @@ class Connection:
             raw = self.socket.recv()
             self.handle_packet(json.loads(raw))
         except websocket.WebSocketException:
-            self.socket = None
+            with self.lock:
+                self.socket = None
             
         return True
 
