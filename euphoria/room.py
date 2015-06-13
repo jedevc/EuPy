@@ -43,12 +43,14 @@ class Room(executable.Executable):
                 self.connection.send_packet(cn.PTYPE["COMMAND"]["NICK"],
                                             cn.build_json(name=self.nickname))
 
-    def close(self):
+    def quit(self):
         """
-        close() -> None
+        quit() -> None
 
-        Close the connection.
+        Performs neccessary cleanup for the connection.
         """
+
+        self.cleanup()
 
         if self.connection is not None:
             self.connection.close()
@@ -58,35 +60,17 @@ class Room(executable.Executable):
         """
         ready() -> None
 
-        Overrideable function for other room types that is called every time the
-        room is ready for transmitting information.
+        Overrideable function that is called every time the room is ready for
+        transmitting information.
         """
 
         pass
-
-    def setup(self):
-        """
-        setup() -> None
-
-        Last minute setup for the room.
-        """
-
-        pass
-
-    def quit(self):
-        """
-        quit() -> None
-
-        Performs neccessary cleanup for rooms that extend this one.
-        """
-
-        self.close()
 
     def cleanup(self):
         """
         cleanup() -> None
 
-        Overrideable cleanup function for final bots.
+        Overrideable cleanup function that is called when the room is closing.
         """
 
         pass
@@ -126,6 +110,5 @@ class Room(executable.Executable):
                     self.join()
                     self.identify()
                     self.ready()
-                    self.setup()
             except OSError:  #Catching some exception that occurs in single threading bots
                 break

@@ -12,11 +12,11 @@ class HiBot(eu.ping_room.PingRoom, eu.chat_room.ChatRoom):
         elif "hi" in message["content"].lower():
             self.send_chat("Hi there!", message["id"])
 
-    def setup(self):
-        print("Appearing...")
+    def ready(self):
+        print("Hello...")
 
     def cleanup(self):
-        print("Leaving...")
+        print("Goodbye...")
 
 def main():
     hi = HiBot("test")

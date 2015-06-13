@@ -16,54 +16,52 @@ class UserRoom(room.Room):
                                             self.handle_join)
         self.connection.add_callback(cn.PTYPE["EVENT"]["PART"],
                                             self.handle_part)
-        
+        self.connection.add_callback(cn.PTYPE["EVENT"]["SNAPSHOT"],
+                                            self.handle_snapshot)
+
         self.people = []
 
     def handle_change(self, data):
         """
         handle_user(data) -> None
-        
+
         Change a user's name.
         """
-        
+
         info = data["data"]
-        
+
         if info["from"] in self.people:
             self.people.remove(info["from"])
-            
+
         self.people.append(info["to"])
-    
+
     def handle_join(self, data):
         """
         handle_join(data) -> None
-        
+
         Add a new user when they join.
         """
-        
+
         self.people.append(data["data"]["name"])
-    
+
     def handle_part(self, data):
         """
         handle_part(data) -> None
-        
+
         Remove a user when they leave.
         """
-        
+
         if data["data"]["name"] in self.people:
             self.people.remove(data["data"]["name"])
-        
-    def handle_who(self, data):
+
+    def handle_snapshot(self, data):
         """
         handle_who(data) -> None
-        
+
         Get a complete list of who is in the room.
         """
-        
+
         self.people.clear()
-        
+
         for user in data["data"]["listing"]:
             self.people.append(user["name"])
-
-    def ready(self):
-        self.connection.send_packet(cn.PTYPE["COMMAND"]["WHO"], "",
-                                            self.handle_who)

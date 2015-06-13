@@ -38,16 +38,6 @@ class ExecGroup(executable.Executable):
         while not self.stop:
             time.sleep(2)
 
-    def cleanup(self):
-        """
-        cleanup() -> None
-
-        Function to be overridden for cleanup.
-        """
-
-        for i in self.execs:
-            i.cleanup()
-
     def quit(self):
         """
         quit() -> None

@@ -17,9 +17,6 @@ class Executable:
     def quit(self):
         pass
 
-    def cleanup(self):
-        pass
-
 def start(e):
     """
     Run an exectutable class. This provides a way to make sure that a class is
@@ -32,7 +29,6 @@ def start(e):
         signal.signal(signal.SIGTERM, signal.SIG_IGN)
         signal.signal(signal.SIGINT, signal.SIG_IGN)
 
-        e.cleanup()
         e.quit()
 
     signal.signal(signal.SIGTERM, exit_program)
