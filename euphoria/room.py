@@ -14,19 +14,19 @@ class Room(executable.Executable):
 
         self.roomname = roomname
         self.password = password
-    
+
         self.nickname = None
 
     def join(self):
         """
         join() -> None
-        
+
         Connects to the room and sends the passcode.
         """
-        
+
         if self.connection is not None:
             self.connection.connect(self.roomname)
-            
+
             if self.password is not None:
                 self.connection.send_packet(cn.PTYPE["COMMAND"]["AUTH"],
                                             cn.build_json(passcode=self.password))
@@ -43,25 +43,53 @@ class Room(executable.Executable):
                 self.connection.send_packet(cn.PTYPE["COMMAND"]["NICK"],
                                             cn.build_json(name=self.nickname))
 
-    def ready(self):
+    def close(self):
         """
-        ready() -> None
-        
-        Do last minute setup for the room.
-        """
-        
-        pass
-            
-    def quit(self):
-        """
-        quit() -> None
-        
-        Performs neccessary cleanup.
+        close() -> None
+
+        Close the connection.
         """
 
         if self.connection is not None:
             self.connection.close()
             self.connection = None
+
+    def ready(self):
+        """
+        ready() -> None
+
+        Overrideable function for other room types that is called every time the
+        room is ready for transmitting information.
+        """
+
+        pass
+
+    def setup(self):
+        """
+        setup() -> None
+
+        Last minute setup for the room.
+        """
+
+        pass
+
+    def quit(self):
+        """
+        quit() -> None
+
+        Performs neccessary cleanup for rooms that extend this one.
+        """
+
+        self.close()
+
+    def cleanup(self):
+        """
+        cleanup() -> None
+
+        Overrideable cleanup function for final bots.
+        """
+
+        pass
 
     def run(self):
         """
@@ -69,20 +97,20 @@ class Room(executable.Executable):
 
         Run the room.
         """
-        
+
         first = True
         attempts = 0
-        
+
         while self.connection is not None:
             #Check for multiple failures in a row
             if attempts >= 2:
                 self.quit()
                 break
-            
+
             #Check if quit
             if self.connection is None:
                 break
-            
+
             #Receive data and handle connection errors
             try:
                 if self.connection.receive_data():
@@ -98,5 +126,6 @@ class Room(executable.Executable):
                     self.join()
                     self.identify()
                     self.ready()
+                    self.setup()
             except OSError:  #Catching some exception that occurs in single threading bots
                 break

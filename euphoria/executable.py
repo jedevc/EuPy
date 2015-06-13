@@ -7,7 +7,7 @@ class Executable:
     """
     A class that can be executed.
     """
-    
+
     def __init__(self):
         pass
 
@@ -17,18 +17,22 @@ class Executable:
     def quit(self):
         pass
 
+    def cleanup(self):
+        pass
+
 def start(e):
     """
     Run an exectutable class. This provides a way to make sure that a class is
     properly closed on SIGINT and SIGTERM.
-    
+
     Note: This function should only be called from the main thread.
     """
-    
+
     def exit_program(s, f):
         signal.signal(signal.SIGTERM, signal.SIG_IGN)
         signal.signal(signal.SIGINT, signal.SIG_IGN)
-        
+
+        e.cleanup()
         e.quit()
 
     signal.signal(signal.SIGTERM, exit_program)
