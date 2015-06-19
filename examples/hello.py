@@ -13,13 +13,13 @@ class HiBot(eu.ping_room.PingRoom, eu.chat_room.ChatRoom):
             self.send_chat("Hi there!", message["id"])
 
     def ready(self):
-        print("Hello...")
+        self.send_chat("/me Hello!")
 
     def cleanup(self):
-        print("Goodbye...")
+        self.send_chat("/me Goodbye...")
 
 def main():
-    hi = HiBot("test")
+    hi = HiBot("testing")
     eu.executable.start(hi)
 
 if __name__ == "__main__":

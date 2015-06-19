@@ -13,7 +13,8 @@ class ExecGroup(executable.Executable):
         self.execs = []
         self.exec_threads = []
 
-        self.stop = False
+        self.lock = threading.Lock()
+        self.running = False
 
     def add(self, toadd):
         """
@@ -23,7 +24,12 @@ class ExecGroup(executable.Executable):
         """
 
         self.execs.append(toadd)
-        self.exec_threads.append(threading.Thread(target=toadd.run))
+        th = threading.Thread(target=toadd.run)
+        self.exec_threads.append(th)
+
+        with self.lock:
+            if self.running:
+                th.start()
 
     def run(self):
         """
@@ -32,10 +38,13 @@ class ExecGroup(executable.Executable):
         Start all the executables and wait in a loop.
         """
 
+        with self.lock:
+            self.running = True
+
         for e in self.exec_threads:
             e.start()
 
-        while not self.stop:
+        while self.running:
             time.sleep(2)
 
     def quit(self):
@@ -45,7 +54,7 @@ class ExecGroup(executable.Executable):
         Quit nicely.
         """
 
-        self.stop = True
+        self.running = False
 
         for i in self.execs:
             i.quit()
