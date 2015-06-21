@@ -41,7 +41,7 @@ class Connection:
 
         #Thread stuff
         self.lock = threading.RLock()
-        
+
     def add_callback(self, ptype, callback):
         """
         add_callback(ptype, callback) -> None
@@ -65,7 +65,7 @@ class Connection:
         self.room = room
 
         url = "wss://euphoria.io/room/" + room + "/ws"
-        
+
         try:
             self.socket = websocket.create_connection(url, enable_multithread=True)
         except (websocket.WebSocketException, IOError):
@@ -77,7 +77,7 @@ class Connection:
 
         Close the connection to the room off nicely.
         """
-        
+
         with self.lock:
             if self.socket is not None:
                 self.socket.abort()
@@ -99,7 +99,7 @@ class Connection:
         except websocket.WebSocketException:
             with self.lock:
                 self.socket = None
-                
+
         return True
 
     def receive_data(self):
@@ -112,14 +112,14 @@ class Connection:
 
         if self.socket is None:
             return False
-            
+
         try:
             raw = self.socket.recv()
             self.handle_packet(json.loads(raw))
         except websocket.WebSocketException:
             with self.lock:
                 self.socket = None
-            
+
         return True
 
     def send_packet(self, ptype, data, callback=None):
@@ -151,7 +151,7 @@ class Connection:
 
         pid = packet.get("id")
         ptype = packet.get("type")
-        
+
         if pid in self.id_callbacks:
             callback = self.id_callbacks.pop(pid)
             if callable(callback):

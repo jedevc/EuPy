@@ -17,16 +17,17 @@ class NickRoom(room.Room):
         Change your username to a different one.
         """
 
-        self.connection.send_packet(cn.PTYPE["COMMAND"]["NICK"], 
+        self.connection.send_packet(cn.PTYPE["COMMAND"]["NICK"],
                                     cn.build_json(name=nick),
                                     self.handle_nickreply)
-        
+
     def handle_nickreply(self, data):
         """
         handle_nickreply(data) -> None
-        
+
         Handle a callback so that the nickname is only changed once you have
         received confirmation from the server.
         """
-        
-        self.nickname = data["data"]["to"]
+
+        if data["data"] is not None:
+            self.nickname = data["data"]["to"]
