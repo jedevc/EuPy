@@ -9,13 +9,17 @@ class Room(executable.Executable):
     interfacing with the room.
     """
 
-    def __init__(self, roomname, password=None):
+    def __init__(self, roomname, password=None, attempts=None):
         self.connection = cn.Connection()
 
         self.roomname = roomname
         self.password = password
 
         self.nickname = None
+
+        self.attempts = attempts
+
+        self.running = False
 
     def join(self):
         """
@@ -54,7 +58,7 @@ class Room(executable.Executable):
 
         if self.connection is not None:
             self.connection.close()
-            self.connection = None
+            self.running = False
 
     def ready(self):
         """
@@ -82,12 +86,13 @@ class Room(executable.Executable):
         Run the room.
         """
 
+        self.running = True
         first = True
         attempts = 0
 
-        while self.connection is not None:
+        while self.running:
             #Check for multiple failures in a row
-            if attempts >= 2:
+            if self.attempts is not None and attempts >= self.attempts:
                 self.quit()
                 break
 

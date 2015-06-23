@@ -7,8 +7,8 @@ class UserRoom(room.Room):
     A user room contains a list of all the current users in the room.
     """
 
-    def __init__(self, roomname, password=None):
-        super().__init__(roomname, password)
+    def __init__(self, roomname, password=None, attempts=None):
+        super().__init__(roomname, password, attempts)
 
         self.connection.add_callback(cn.PTYPE["EVENT"]["NICK"],
                                             self.handle_change)

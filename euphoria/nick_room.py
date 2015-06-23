@@ -7,8 +7,8 @@ class NickRoom(room.Room):
     A nick room allows a user to quickly change names.
     """
 
-    def __init__(self, roomname, password=None):
-        super().__init__(roomname, password)
+    def __init__(self, roomname, password=None, attempts=None):
+        super().__init__(roomname, password, attempts)
 
     def change_nick(self, nick):
         """

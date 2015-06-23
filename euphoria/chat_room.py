@@ -7,8 +7,8 @@ class ChatRoom(room.Room):
     A chat room allows you to talk and process chats from the room.
     """
 
-    def __init__(self, roomname, password=None):
-        super().__init__(roomname, password)
+    def __init__(self, roomname, password=None, attempts=None):
+        super().__init__(roomname, password, attempts)
 
         self.connection.add_callback(cn.PTYPE["EVENT"]["SEND"],
                                             self.handle_message)

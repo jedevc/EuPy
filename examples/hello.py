@@ -2,7 +2,7 @@ import euphoria as eu
 
 class HiBot(eu.ping_room.PingRoom, eu.chat_room.ChatRoom):
     def __init__(self, roomname, password=None):
-        super().__init__(roomname, password)
+        super().__init__(roomname, password, attempts=2)
 
         self.nickname = "HiBot"
 
