@@ -9,13 +9,13 @@ class Executable:
     """
 
     def __init__(self):
-        pass
+        self.running = False
 
     def run(self):
-        pass
+        self.running = True
 
     def quit(self):
-        pass
+        self.running = False
 
 def start(e):
     """

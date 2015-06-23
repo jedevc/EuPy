@@ -44,7 +44,12 @@ class ExecGroup(executable.Executable):
         for e in self.exec_threads:
             e.start()
 
-        while self.running:
+        while self.running and len(self.execs) != 0:
+            for i in range(len(self.execs) - 1, -1, -1):
+                if not self.execs[i].running:
+                    self.exec_threads[i].join()
+                    self.exec_threads.remove(self.exec_threads[i])
+                    self.execs.remove(self.execs[i])
             time.sleep(2)
 
     def quit(self):

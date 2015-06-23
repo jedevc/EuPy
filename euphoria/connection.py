@@ -67,7 +67,7 @@ class Connection:
         url = "wss://euphoria.io/room/" + room + "/ws"
 
         try:
-            self.socket = websocket.create_connection(url, enable_multithread=True)
+            self.socket = websocket.create_connection(url, enable_multithread=True, timeout=40)
         except (websocket.WebSocketException, IOError):
             self.socket = None
 
@@ -80,8 +80,11 @@ class Connection:
 
         with self.lock:
             if self.socket is not None:
-                self.socket.abort()
-                self.socket.close()
+                try:
+                    self.socket.abort()
+                    self.socket.close()
+                except OSError:
+                    pass
                 self.socket = None
 
     def send_json(self, data):
