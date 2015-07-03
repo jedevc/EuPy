@@ -1,4 +1,4 @@
-# [Euphoria](euphoria.io) API by @jedevc
+# EuPy by @jedevc
 An API that wraps sockets in a nice interface and provides methods for sending and receiving packets from euphoria.
 
 ## How to set up
