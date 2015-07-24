@@ -2,11 +2,17 @@
 An API that wraps sockets in a nice interface and provides methods for sending and receiving packets from euphoria.
 
 ## How to set up
-So, there is a setup.py file for installing and stuff but I have absolutely no idea how to use it. So, here are some simple setup instructions for those (like me) who don't care about the setup.py:
+So, there is a setup.py file for installing which works as follows:
 
+```bash
+python3 setup.py install
+```
+
+But if you don't want to actually install the library you can just download it like so:
 ```bash
 #If you don't want to use pip you can try downloading the client from the webpage at
 #https://pypi.python.org/pypi/websocket-client
+#Or it might even be in your distro's repositories - always check there first.
 pip3 install websocket-client
 
 #Clone the repo
