@@ -74,3 +74,17 @@ class ExecGroup(executable.Executable):
 
         for i in self.exec_threads:
             i.join()
+
+def bind(*args, autostop=True):
+    """
+    bind(*args) -> ExecGroup
+
+    Turn a bunch of executables into a group easily.
+    """
+
+    group = ExecGroup(autostop)
+
+    for a in args:
+        group.add(a)
+
+    return group
