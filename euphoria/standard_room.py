@@ -4,6 +4,8 @@ from . import chat_room
 
 from . import utils
 
+import datetime
+
 class StandardRoom(chat_room.ChatRoom):
     """
     A room with basic utilities already implemented as instructed by
@@ -34,12 +36,7 @@ class StandardRoom(chat_room.ChatRoom):
                 self.send_chat(self.help_text, reply)
 
         elif content == "!uptime @" + self.nickname:
-            u = "%i-%i-%i %d:%d:%d" % (self.start_utc.year,
-                                       self.start_utc.month,
-                                       self.start_utc.day,
-                                       self.start_utc.hour,
-                                       self.start_utc.minute,
-                                       self.start_utc.second)
+            u = datetime.datetime.strftime(self.start_utc, "%Y-%m-%d %H:%M:%S")
             t = utils.extract_time(self.uptime())
 
             self.send_chat("/me has been up since " + u + " UTC (" + t + ")", reply)
