@@ -11,16 +11,16 @@ class ChatRoom(room.Room):
         super().__init__(roomname, password, attempts)
 
         self.connection.add_callback(cn.PTYPE["EVENT"]["SEND"],
-                                            self.handle_message)
+                                                self.handle_message)
 
-    def handle_message(self, data):
+    def handle_message(self, message):
         """
-        handle_message(data) -> None
+        handle_message(message) -> None
 
-        Simply extracts the message data and passes it on to handle_chat()
+        Pipes the message onto handle_chat()
         """
 
-        self.handle_chat(data["data"])
+        self.handle_chat(message["data"])
 
     def handle_chat(self, message):
         """

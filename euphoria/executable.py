@@ -1,6 +1,9 @@
 import signal
 import sys
 
+import time
+import datetime
+
 import threading
 
 class Executable:
@@ -10,8 +13,14 @@ class Executable:
 
     def __init__(self):
         self.running = False
+        self.start_time = None
+        self.start_utc = datetime.datetime.utcnow()
+
+    def uptime(self):
+        return time.time() - self.start_time
 
     def run(self):
+        self.start_time = time.time()
         self.running = True
 
     def quit(self):

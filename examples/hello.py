@@ -1,15 +1,15 @@
 import euphoria as eu
 
-class HiBot(eu.ping_room.PingRoom, eu.chat_room.ChatRoom):
+class HiBot(eu.ping_room.PingRoom, eu.standard_room.StandardRoom):
     def __init__(self, roomname, password=None):
         super().__init__(roomname, password, attempts=2)
 
         self.nickname = "HiBot"
+        self.short_help_text = "Say hello to @HiBot!"
+        self.help_text = self.short_help_text + 2 * '\n' + "Just a quick demo bot."
 
     def handle_chat(self, message):
-        if message["content"] == "!ping":
-            self.send_chat("Pong!", message["id"])
-        elif "hi" in message["content"].lower():
+        if "hi" in message["content"].lower():
             self.send_chat("Hi there!", message["id"])
 
     def ready(self):

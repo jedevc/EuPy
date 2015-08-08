@@ -1,4 +1,5 @@
 from . import connection
+from . import utils
 from . import executable
 from . import execgroup
 from . import room
@@ -6,3 +7,4 @@ from . import ping_room
 from . import chat_room
 from . import user_room
 from . import nick_room
+from . import standard_room
