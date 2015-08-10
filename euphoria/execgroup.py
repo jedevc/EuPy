@@ -9,14 +9,16 @@ class ExecGroup(executable.Executable):
     at the same time.
     """
 
-    def __init__(self, autostop=True):
+    def __init__(self, autostop=True, autoclean=True, delay=2):
         self.execs = []
-        self.exec_threads = []
 
         self.lock = threading.Lock()
         self.running = False
 
         self.autostop = autostop
+        self.autoclean = autoclean
+
+        self.delay = delay
 
     def add(self, toadd):
         """
@@ -26,12 +28,7 @@ class ExecGroup(executable.Executable):
         """
 
         self.execs.append(toadd)
-        th = threading.Thread(target=toadd.run)
-        self.exec_threads.append(th)
-
-        with self.lock:
-            if self.running:
-                th.start()
+        toadd.launch()
 
     def run(self):
         """
@@ -43,20 +40,17 @@ class ExecGroup(executable.Executable):
         with self.lock:
             self.running = True
 
-        for e in self.exec_threads:
-            e.start()
-
         while self.running:
             if self.autostop and len(self.execs) == 0:
                 break
 
             #Iterate backwards and remove dead threads
-            for i in range(len(self.execs) - 1, -1, -1):
-                if not self.execs[i].running:
-                    self.exec_threads[i].join()
-                    self.exec_threads.remove(self.exec_threads[i])
-                    self.execs.remove(self.execs[i])
-            time.sleep(2)
+            if self.autoclean:
+                for i in range(len(self.execs) - 1, -1, -1):
+                    if not self.execs[i].running:
+                        self.execs.remove(self.execs[i])
+
+            time.sleep(self.delay)
 
         self.running = False
 
@@ -72,17 +66,14 @@ class ExecGroup(executable.Executable):
         for i in self.execs:
             i.quit()
 
-        for i in self.exec_threads:
-            i.join()
-
-def bind(*args, autostop=True):
+def bind(*args, autostop=True, autoclean=True):
     """
     bind(*args) -> ExecGroup
 
     Turn a bunch of executables into a group easily.
     """
 
-    group = ExecGroup(autostop)
+    group = ExecGroup(autostop, autoclean)
 
     for a in args:
         group.add(a)

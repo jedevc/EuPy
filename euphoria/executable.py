@@ -16,6 +16,8 @@ class Executable:
         self.start_time = None
         self.start_utc = datetime.datetime.utcnow()
 
+        self.thread = None
+
     def uptime(self):
         return time.time() - self.start_time
 
@@ -23,8 +25,15 @@ class Executable:
         self.start_time = time.time()
         self.running = True
 
+    def launch(self):
+        self.thread = threading.Thread(target=self.run)
+        self.thread.start()
+
     def quit(self):
         self.running = False
+
+        if self.thread is not None:
+            self.thread.join()
 
 def start(e):
     """
