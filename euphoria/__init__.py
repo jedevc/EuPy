@@ -1,5 +1,5 @@
 from . import connection
-from . import utils
+from . import base
 from . import executable
 from . import execgroup
 from . import room
@@ -8,3 +8,4 @@ from . import chat_room
 from . import user_room
 from . import nick_room
 from . import standard_room
+from . import utils

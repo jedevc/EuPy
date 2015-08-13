@@ -1,3 +1,5 @@
+from . import base
+
 import signal
 import sys
 
@@ -6,12 +8,14 @@ import datetime
 
 import threading
 
-class Executable:
+class Executable(base.Base):
     """
     A class that can be executed.
     """
 
     def __init__(self):
+        super().__init__()
+
         self.running = False
         self.start_time = None
         self.start_utc = datetime.datetime.utcnow()
