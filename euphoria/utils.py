@@ -1,5 +1,38 @@
+from . import executable
+
 import time
 import unicodedata
+
+#This file contains a collection of useful stuff
+
+class ForeverCall(executable.Executable):
+    """
+    Call a function forever with a delay.
+    """
+
+    def __init__(self, callback=None, delay=None, wait=3):
+        super().__init__()
+
+        self.callback = callback
+        self.delay = delay
+        self.wait = wait
+
+        self.disable = False
+
+    def run(self):
+        super().run()
+
+        if self.delay is None:
+            return
+
+        start = time.time()
+        while self.running:
+            time.sleep(self.wait)
+            if time.time() - start >= self.delay:
+                if not self.disable:
+                    self.callback()
+
+                start = time.time()
 
 def filter_nick(name):
     """
