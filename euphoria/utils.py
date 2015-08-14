@@ -17,7 +17,10 @@ class ForeverCall(executable.Executable):
         self.delay = delay
         self.wait = wait
 
-        self.disable = False
+        self.last_call = None
+
+    def reset(self):
+        self.last_call = time.time()
 
     def run(self):
         super().run()
@@ -25,14 +28,13 @@ class ForeverCall(executable.Executable):
         if self.delay is None:
             return
 
-        start = time.time()
+        self.last_call = time.time()
         while self.running:
-            time.sleep(self.wait)
-            if time.time() - start >= self.delay:
-                if not self.disable:
-                    self.callback()
+            if time.time() - self.last_call >= self.delay:
+                self.callback()
+                self.reset()
 
-                start = time.time()
+            time.sleep(self.wait)
 
 def filter_nick(name):
     """
