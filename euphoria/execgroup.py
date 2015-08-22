@@ -10,10 +10,11 @@ class ExecGroup(executable.Executable):
     """
 
     def __init__(self, autostop=True, autoclean=True, delay=2):
+        super().__init__()
+
         self.execs = []
 
         self.lock = threading.Lock()
-        self.running = False
 
         self.autostop = autostop
         self.autoclean = autoclean
@@ -37,12 +38,11 @@ class ExecGroup(executable.Executable):
         Start all the executables and wait in a loop.
         """
 
-        with self.lock:
-            self.running = True
+        super().run()
 
         while self.running:
             if self.autostop and len(self.execs) == 0:
-                break
+                self.quit()
 
             #Iterate backwards and remove dead threads
             if self.autoclean:
@@ -52,8 +52,6 @@ class ExecGroup(executable.Executable):
 
             time.sleep(self.delay)
 
-        self.running = False
-
     def quit(self):
         """
         quit() -> None
@@ -61,7 +59,7 @@ class ExecGroup(executable.Executable):
         Quit nicely.
         """
 
-        self.running = False
+        super().quit()
 
         for i in self.execs:
             i.quit()
