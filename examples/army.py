@@ -9,6 +9,8 @@ class SoldierBot(eu.ping_room.PingRoom, eu.chat_room.ChatRoom):
     def handle_chat(self, m):
         if m["content"] == "!attack":
             self.send_chat("ATTACK!!!", m["id"])
+        elif m["content"] == "!kill":
+            self.quit()
 
 class ArmyBot(eu.ping_room.PingRoom, eu.standard_room.StandardRoom):
     def __init__(self, group, roomname, password=None):

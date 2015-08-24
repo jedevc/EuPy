@@ -14,8 +14,6 @@ class ExecGroup(executable.Executable):
 
         self.execs = []
 
-        self.lock = threading.Lock()
-
         self.autostop = autostop
         self.autoclean = autoclean
 
@@ -48,6 +46,9 @@ class ExecGroup(executable.Executable):
             if self.autoclean:
                 for i in range(len(self.execs) - 1, -1, -1):
                     if not self.execs[i].running:
+                        if self.execs[i].thread is not None:  #Join thread that has not already joined
+                            self.execs[i].thread.join()
+
                         self.execs.remove(self.execs[i])
 
             time.sleep(self.delay)
@@ -59,10 +60,10 @@ class ExecGroup(executable.Executable):
         Quit nicely.
         """
 
-        super().quit()
-
         for i in self.execs:
             i.quit()
+
+        super().quit()
 
 def bind(*args, autostop=True, autoclean=True):
     """

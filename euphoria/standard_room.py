@@ -19,7 +19,7 @@ class StandardRoom(chat_room.ChatRoom):
         self.short_help_text = None
         self.help_text = None
 
-    def handle_message(self, data):
+    def handle_message(self, data):  #TODO: This is quite hacky.
         content = data["data"]["content"]
         reply = data["data"]["id"]
 

@@ -98,10 +98,6 @@ class Room(executable.Executable):
                 self.quit()
                 break
 
-            #Check if quit
-            if not self.running:
-                break
-
             #Receive data and handle connection errors
             try:
                 if self.connection.receive_data():

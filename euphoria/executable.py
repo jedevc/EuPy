@@ -36,8 +36,9 @@ class Executable(base.Base):
     def quit(self):
         self.running = False
 
-        if self.thread is not None:
+        if self.thread is not None and self.thread is not threading.current_thread():
             self.thread.join()
+            self.thread = None
 
 def start(e):
     """
