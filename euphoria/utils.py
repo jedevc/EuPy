@@ -10,7 +10,7 @@ class ForeverCall(executable.Executable):
     Call a function forever with a delay.
     """
 
-    def __init__(self, callback=None, delay=None, wait=3):
+    def __init__(self, callback, delay, wait=3):
         super().__init__()
 
         self.callback = callback

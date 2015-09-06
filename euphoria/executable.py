@@ -1,5 +1,3 @@
-from . import base
-
 import signal
 import sys
 
@@ -8,7 +6,7 @@ import datetime
 
 import threading
 
-class Executable(base.Base):
+class Executable():
     """
     A class that can be executed.
     """
