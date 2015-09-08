@@ -12,8 +12,7 @@ class PingRoom(room.Room):
     def __init__(self, roomname, password=None, attempts=None):
         super().__init__(roomname, password, attempts)
 
-        self.connection.add_callback(cn.PTYPE["EVENT"]["PING"],
-                                        self.handle_ping)
+        self.connection.add_callback("ping-event", self.handle_ping)
 
     def handle_ping(self, packet):
         """
@@ -23,5 +22,4 @@ class PingRoom(room.Room):
         connection.
         """
 
-        self.connection.send_packet(cn.PTYPE["REPLY"]["PING"],
-                                        cn.build_json(time=int(time.time())))
+        self.connection.send_packet("ping-reply", cn.build_json(time=int(time.time())))

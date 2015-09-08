@@ -17,9 +17,7 @@ class NickRoom(room.Room):
         Change your username to a different one.
         """
 
-        self.connection.send_packet(cn.PTYPE["COMMAND"]["NICK"],
-                                    cn.build_json(name=nick),
-                                    self.handle_nickreply)
+        self.connection.send_packet("nick", cn.build_json(name=nick), self.handle_nickreply)
 
     def handle_nickreply(self, data):
         """

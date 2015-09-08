@@ -10,8 +10,7 @@ class ChatRoom(room.Room):
     def __init__(self, roomname, password=None, attempts=None):
         super().__init__(roomname, password, attempts)
 
-        self.connection.add_callback(cn.PTYPE["EVENT"]["SEND"],
-                                                self.handle_message)
+        self.connection.add_callback("send-event", self.handle_message)
 
     def handle_message(self, message):
         """
@@ -39,5 +38,4 @@ class ChatRoom(room.Room):
         """
 
         if message is not None:
-            self.connection.send_packet(cn.PTYPE["COMMAND"]["SEND"],
-                                cn.build_json(content=message, parent=parent))
+            self.connection.send_packet("send", cn.build_json(content=message, parent=parent))

@@ -25,14 +25,12 @@ class ForeverCall(executable.Executable):
     def run(self):
         super().run()
 
-        if self.delay is None:
-            return
-
         self.last_call = time.time()
         while self.running:
-            if time.time() - self.last_call >= self.delay:
-                self.callback()
-                self.reset()
+            if self.delay is not None:
+                if time.time() - self.last_call >= self.delay:
+                    self.callback()
+                    self.reset()
 
             time.sleep(self.wait)
 

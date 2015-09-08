@@ -10,14 +10,10 @@ class UserRoom(room.Room):
     def __init__(self, roomname, password=None, attempts=None):
         super().__init__(roomname, password, attempts)
 
-        self.connection.add_callback(cn.PTYPE["EVENT"]["NICK"],
-                                            self.handle_change)
-        self.connection.add_callback(cn.PTYPE["EVENT"]["JOIN"],
-                                            self.handle_join)
-        self.connection.add_callback(cn.PTYPE["EVENT"]["PART"],
-                                            self.handle_part)
-        self.connection.add_callback(cn.PTYPE["EVENT"]["SNAPSHOT"],
-                                            self.handle_snapshot)
+        self.connection.add_callback("nick-event", self.handle_change)
+        self.connection.add_callback("join-event", self.handle_join)
+        self.connection.add_callback("part-event", self.handle_part)
+        self.connection.add_callback("snapshot-event", self.handle_snapshot)
 
         self.people = []
 
