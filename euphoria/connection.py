@@ -19,11 +19,14 @@ class Connection:
     receiving packets.
     """
 
-    def __init__(self):
+    def __init__(self, limit=0):
         self.socket = None
         self.room = ""
 
         self.idcounter = 0
+
+        self.limit = limit
+        self.last_packet = time.time()
 
         #Different types of callbacks
         self.type_callbacks = dict()
@@ -84,14 +87,18 @@ class Connection:
         Send json data into the stream. Returns false on message fail.
         """
 
-        if self.socket is None:
-            return False
+        now = time.time()
+        if self.limit != 0 and now - self.last_packet < self.limit:
+            time.sleep(self.limit - (now - self.last_packet))
 
         try:
             self.socket.send(json.dumps(data))
-        except websocket.WebSocketException:
+        except (AttributeError, websocket.WebSocketException):
             with self.lock:
                 self.socket = None
+            return False
+
+        self.last_packet = time.time()
 
         return True
 
