@@ -15,7 +15,10 @@ class UserRoom(room.Room):
         self.connection.add_callback("part-event", self.handle_part)
         self.connection.add_callback("snapshot-event", self.handle_snapshot)
 
-        self.people = []
+        self.users = []
+
+    def get_users(self, prefix):
+        return [x[1] for x in self.users if x[0].split(':')[0] == prefix]
 
     def handle_change(self, data):
         """
@@ -24,12 +27,10 @@ class UserRoom(room.Room):
         Change a user's name.
         """
 
-        info = data["data"]
+        if (data["data"]["id"], data["data"]["from"]) in self.users:
+            self.users.remove((data["data"]["id"], data["data"]["from"]))
 
-        if info["from"] in self.people:
-            self.people.remove(info["from"])
-
-        self.people.append(info["to"])
+        self.users.append((data["data"]["id"], data["data"]["to"]))
 
     def handle_join(self, data):
         """
@@ -38,7 +39,7 @@ class UserRoom(room.Room):
         Add a new user when they join.
         """
 
-        self.people.append(data["data"]["name"])
+        self.users.append((data["data"]["id"], data["data"]["name"]))
 
     def handle_part(self, data):
         """
@@ -47,8 +48,8 @@ class UserRoom(room.Room):
         Remove a user when they leave.
         """
 
-        if data["data"]["name"] in self.people:
-            self.people.remove(data["data"]["name"])
+        if (data["data"]["id"], data["data"]["name"]) in self.users:
+            self.users.remove((data["data"]["id"], data["data"]["name"]))
 
     def handle_snapshot(self, data):
         """
@@ -57,7 +58,7 @@ class UserRoom(room.Room):
         Get a complete list of who is in the room.
         """
 
-        self.people.clear()
+        self.users.clear()
 
         for user in data["data"]["listing"]:
-            self.people.append(user["name"])
+            self.users.append((user["id"], user["name"]))
