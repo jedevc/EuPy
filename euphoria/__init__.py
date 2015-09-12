@@ -8,3 +8,4 @@ from . import user_room
 from . import nick_room
 from . import standard_room
 from . import utils
+from . import command
