@@ -61,6 +61,16 @@ class Room(executable.Executable):
 
         super().quit()
 
+    def jump(self, room):
+        """
+        jump() -> None
+
+        Jump to another room.
+        """
+
+        self.connection.refresh(room)
+        self.identify()
+
     def ready(self):
         """
         ready() -> None

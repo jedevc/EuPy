@@ -66,6 +66,16 @@ class Connection:
         except (websocket.WebSocketException, IOError):
             self.socket = None
 
+    def refresh(self, room):
+        sock = self.socket
+
+        self.connect(room)
+
+        if self.socket:
+            sock.close()
+        else:
+            self.socket = sock
+
     def close(self):
         """
         close() -> None
