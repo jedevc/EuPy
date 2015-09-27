@@ -7,5 +7,6 @@ from . import chat_room
 from . import user_room
 from . import nick_room
 from . import standard_room
+from . import forever
 from . import utils
 from . import command

@@ -1,4 +1,9 @@
 class Command:
+    """
+    The Command class allows you to parse and read bot commands. This includes
+    the main command, the arguments and the flags.
+    """
+
     def __init__(self, text):
         self.text = text
 
@@ -7,6 +12,12 @@ class Command:
         self.args = []
 
     def parse(self):
+        """
+        parse() -> None
+
+        Perform the parsing.
+        """
+
         parts = self.text.split()
 
         if len(parts) == 0:

@@ -54,12 +54,6 @@ class ExecGroup(executable.Executable):
             time.sleep(self.delay)
 
     def quit(self):
-        """
-        quit() -> None
-
-        Quit nicely.
-        """
-
         for i in self.execs:
             i.quit()
 

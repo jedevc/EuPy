@@ -31,8 +31,8 @@ class Connection:
         self.last_packet = time.time()
 
         #Different types of callbacks
-        self.type_callbacks = dict()
-        self.id_callbacks = dict()
+        self.type_callbacks = {}
+        self.id_callbacks = {}
 
         #Thread stuff
         self.lock = threading.RLock()
