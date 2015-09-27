@@ -19,7 +19,9 @@ class Connection:
     receiving packets.
     """
 
-    def __init__(self, limit=0):
+    def __init__(self, limit=0, site="euphoria.io"):
+        self.site = site
+
         self.socket = None
         self.room = ""
 
@@ -57,7 +59,7 @@ class Connection:
 
         self.room = room
 
-        url = "wss://euphoria.io/room/" + room + "/ws"
+        url = "wss://%s/room/%s/ws" % (self.site, self.room)
 
         try:
             self.socket = websocket.create_connection(url, enable_multithread=True, timeout=40)
