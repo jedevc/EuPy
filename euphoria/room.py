@@ -63,13 +63,15 @@ class Room(executable.Executable):
 
     def jump(self, room):
         """
-        jump() -> None
+        jump() -> Bool
 
         Jump to another room.
         """
 
-        self.connection.refresh(room)
+        ret = self.connection.refresh(room)
         self.identify()
+
+        return ret
 
     def ready(self):
         """
