@@ -1,5 +1,7 @@
 import time
 
+from . import executable
+
 class ForeverCall(executable.Executable):
     """
     Call a function forever with a delay.
