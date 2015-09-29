@@ -1,4 +1,4 @@
-from . import connection as cn
+from . import connection
 
 from . import room
 

@@ -1,4 +1,4 @@
-from . import connection as cn
+from . import connection
 
 from . import room
 
@@ -22,4 +22,4 @@ class PingRoom(room.Room):
         connection.
         """
 
-        self.connection.send_packet("ping-reply", cn.build_json(time=int(time.time())))
+        self.connection.send_packet("ping-reply", connection.build_json(time=int(time.time())))

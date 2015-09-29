@@ -1,4 +1,4 @@
-from . import connection as cn
+from . import connection
 
 from . import room
 
@@ -38,4 +38,5 @@ class ChatRoom(room.Room):
         """
 
         if message is not None:
-            self.connection.send_packet("send", cn.build_json(content=message, parent=parent))
+            self.connection.send_packet("send",
+                        connection.build_json(content=message, parent=parent))

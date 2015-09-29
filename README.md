@@ -10,17 +10,15 @@ python3 setup.py install
 
 But if you don't want to actually install the library you can just download it like so:
 ```bash
-#If you don't want to use pip you can try downloading the client from the webpage at
-#https://pypi.python.org/pypi/websocket-client
-#Or it might even be in your distro's repositories - always check there first.
+#Install dependencies
 pip3 install websocket-client
 
 #Clone the repo
 git clone https://github.com/jedevc/euphoria-python.git
 
-#Navigate to the directory and run the example
-cd euphoria-python
-python3 examples/hello.py
+#Navigate to the directory and compress the files into one file
+cd eupy
+python3 min.py > eupy.py
 ```
 
 ## Quick use

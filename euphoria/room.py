@@ -1,4 +1,4 @@
-from . import connection as cn
+from . import connection
 from . import executable
 
 import time
@@ -12,7 +12,7 @@ class Room(executable.Executable):
     def __init__(self, roomname, password=None, attempts=None):
         super().__init__()
 
-        self.connection = cn.Connection()
+        self.connection = connection.Connection()
 
         self.roomname = roomname
         self.password = password
@@ -33,7 +33,8 @@ class Room(executable.Executable):
 
             if self.password is not None:
                 self.connection.send_packet("auth",
-                        cn.build_json(type="passcode", passcode=self.password))
+                        connection.build_json(type="passcode",
+                                                    passcode=self.password))
 
     def identify(self):
         """
@@ -45,7 +46,7 @@ class Room(executable.Executable):
         if self.connection is not None:
             if self.nickname is not None:
                 self.connection.send_packet("nick",
-                                            cn.build_json(name=self.nickname))
+                                    connection.build_json(name=self.nickname))
 
     def quit(self):
         """

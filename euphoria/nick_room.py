@@ -1,4 +1,4 @@
-from . import connection as cn
+from . import connection
 
 from . import room
 
@@ -17,7 +17,7 @@ class NickRoom(room.Room):
         Change your username to a different one.
         """
 
-        self.connection.send_packet("nick", cn.build_json(name=nick), self.handle_nickreply)
+        self.connection.send_packet("nick", connection.build_json(name=nick), self.handle_nickreply)
 
     def handle_nickreply(self, data):
         """
