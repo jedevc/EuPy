@@ -59,14 +59,14 @@ class ExecGroup(executable.Executable):
 
         super().quit()
 
-def bind(*args, autostop=True, autoclean=True):
+def bind(*args, autostop=True, autoclean=True, delay=2):
     """
     bind(*args) -> ExecGroup
 
     Turn a bunch of executables into a group easily.
     """
 
-    group = ExecGroup(autostop, autoclean)
+    group = ExecGroup(autostop, autoclean, delay)
 
     for a in args:
         group.add(a)

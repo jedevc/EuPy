@@ -51,7 +51,7 @@ class Connection:
 
     def connect(self, room):
         """
-        connect(room) -> None
+        connect(room) -> Bool
 
         Connect to the given room. Cannot send messages without first
         connecting.
@@ -65,6 +65,9 @@ class Connection:
             self.socket = websocket.create_connection(url, enable_multithread=True, timeout=40)
         except (websocket.WebSocketException, IOError):
             self.socket = None
+            return False
+
+        return True
 
     def refresh(self, room=None):
         """

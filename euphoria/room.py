@@ -23,18 +23,22 @@ class Room(executable.Executable):
 
     def join(self):
         """
-        join() -> None
+        join() -> Bool
 
         Connects to the room and sends the passcode.
         """
 
-        if self.connection is not None:
-            self.connection.connect(self.roomname)
+        ret = False
 
-            if self.password is not None:
-                self.connection.send_packet("auth",
-                        connection.build_json(type="passcode",
+        if self.connection is not None:
+            ret = self.connection.connect(self.roomname)
+            if ret:
+                if self.password is not None:
+                    self.connection.send_packet("auth",
+                            connection.build_json(type="passcode",
                                                     passcode=self.password))
+
+        return ret
 
     def identify(self):
         """
