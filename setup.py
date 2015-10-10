@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name='euphoria-python',
+setup(name='eupy',
         version='1.0',
         description='An API to interact with the chatrooms at euphoria.io',
         author='Justin Chadwell',

@@ -106,7 +106,7 @@ class Room(executable.Executable):
 
         super().run()
 
-        first = True
+        first_attempt = True
         attempts = 0
 
         while self.running:
@@ -121,9 +121,13 @@ class Room(executable.Executable):
                     attempts = 0
                 else:
                     #No connection initialized
-                    if first:
-                        first = False
+                    if first_attempt:
+                        first_attempt = False
                     else:
+                        #Just disconnected
+                        if attempts == 0: 
+                            self.cleanup()
+
                         time.sleep(5)
                         attempts += 1
 
