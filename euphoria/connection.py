@@ -4,15 +4,6 @@ import json
 import time
 import threading
 
-def build_json(**data):
-    """
-    build_json(**data) -> dict
-
-    Build a dictionary out of arguments.
-    """
-
-    return data
-
 class Connection:
     """
     A basic object that provides a simple interface of callbacks for sending and

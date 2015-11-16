@@ -22,4 +22,4 @@ class PingRoom(room.Room):
         connection.
         """
 
-        self.connection.send_packet("ping-reply", connection.build_json(time=int(time.time())))
+        self.connection.send_packet("ping-reply", dict(time=int(time.time())))

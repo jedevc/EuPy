@@ -39,4 +39,4 @@ class ChatRoom(room.Room):
 
         if message is not None:
             self.connection.send_packet("send",
-                        connection.build_json(content=message, parent=parent))
+                dict(content=message, parent=parent))

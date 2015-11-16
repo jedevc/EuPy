@@ -35,8 +35,7 @@ class Room(executable.Executable):
             if ret:
                 if self.password is not None:
                     self.connection.send_packet("auth",
-                            connection.build_json(type="passcode",
-                                                    passcode=self.password))
+                        dict(type="passcode", passcode=self.password))
 
         return ret
 
@@ -49,8 +48,7 @@ class Room(executable.Executable):
 
         if self.connection is not None:
             if self.nickname is not None:
-                self.connection.send_packet("nick",
-                                    connection.build_json(name=self.nickname))
+                self.connection.send_packet("nick", dict(name=self.nickname))
 
     def quit(self):
         """
@@ -125,7 +123,7 @@ class Room(executable.Executable):
                         first_attempt = False
                     else:
                         #Just disconnected
-                        if attempts == 0: 
+                        if attempts == 0:
                             self.cleanup()
 
                         time.sleep(5)
