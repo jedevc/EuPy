@@ -26,6 +26,7 @@ class Command:
         if parts[0][0] == '!':
             self.command = parts[0][1:]
 
+        split = 1
         for p in range(1, len(parts)):
             if parts[p][0] == '-':
                 if '=' in parts[p]:
@@ -33,5 +34,8 @@ class Command:
                     self.flags[flag[0]] = flag[1]
                 else:
                     self.flags[parts[p][1:]] = None
+                split = p + 1
             else:
-                self.args.append(parts[p])
+                break
+
+        self.args = parts[split:]

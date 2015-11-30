@@ -10,7 +10,8 @@ def filter_nick(name):
     make it all lower case.
 
     This function is intended to mimic euphoria's name pinging system, however
-    it is slightly less pedantic, allowing for punctuation within names.
+    it is slightly less pedantic, allowing for punctuation within names. It is
+    what @NotBot uses for it's nick system.
     """
 
     ret = "".join(c for c in name if unicodedata.category(c)[0] not in ["C", "Z"])
